@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js | pino-pretty -t",
-    "debug": "node index.js | pino-pretty -t",
+    "start": "node -e \"require('./index').handler()\" | pino-pretty -t",
     "pretest": "eslint index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
