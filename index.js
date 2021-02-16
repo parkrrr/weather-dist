@@ -67,4 +67,8 @@ async function main() {
   await sendObservation(record);
 }
 
+exports.handler = async function(event) {
+  return main().promise();
+}
+
 main();

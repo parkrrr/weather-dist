@@ -1,11 +1,6 @@
-FROM node:14
+FROM public.ecr.aws/lambda/nodejs:14
 
-WORKDIR /usr/src/app
+COPY index.js package*.json /var/task/
+RUN npm ci --only=production
 
-COPY package*.json ./
-
-RUN npm install
-
-COPY . .
-
-CMD [ "node", "index.js" ]
+CMD [ "index.handler" ] 
