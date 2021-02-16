@@ -67,15 +67,4 @@ async function main() {
   await sendObservation(record);
 }
 
-exports.handler = async function (event) {
-  const promise = new Promise(function (resolve, reject) {
-    main((res) => {
-      resolve(res.statusCode)
-    }).on('error', (e) => {
-      reject(Error(e))
-    })
-  })
-  return promise;
-}
-
 main();
