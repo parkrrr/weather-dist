@@ -68,7 +68,7 @@ async function main() {
 }
 
 exports.handler = async function(event) {
-  return main().promise();
+  return await main();
 }
 
 main();
