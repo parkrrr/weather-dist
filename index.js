@@ -37,34 +37,9 @@ async function getObservation() {
   }
 }
 
-async function getLastObservation() {
-  try {
-    logger.info('retrieving last observation')
-    let client = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
-
-    let results = await client.scan({
-      TableName: 'weather-data',
-      Limit: 1
-    }).promise();
-
-    let lastObservation;
-
-    if (results.Items.length == 0) {
-      logger.info('no previous observation found');
-      lastObservation = new Date().toISOString()
-    }
-
-    lastObservation = results.Items[0].properties.timestamp;
-    logger.info("last observation: " + lastObservation)
-    return lastObservation;
-  }
-  catch (error) {
-    logger.error(error);
-  }
-}
-
 async function sendObservation(observation) {
   try {
+    logger.info("sending observation");
     let item = AWS.DynamoDB.Converter.marshall(observation);
     item.locationid = { S: observation.properties.station };
     item.observationtime = { S: observation.properties.timestamp };
@@ -75,7 +50,7 @@ async function sendObservation(observation) {
     };
 
     let dynamodb = new AWS.DynamoDB();
-    await dynamodb.putItem(params)
+    await dynamodb.putItem(params).promise();
   }
   catch (error) {
     logger.error('failed to send observation: ' + error)
@@ -83,8 +58,6 @@ async function sendObservation(observation) {
 }
 
 async function main() {
-  let lastObservation = await getLastObservation();
-
   let record = await getObservation();
   if (record == null) {
     logger.fatal('failed to get observation');
@@ -92,6 +65,17 @@ async function main() {
   }
 
   await sendObservation(record);
+}
+
+exports.handler = async function (event) {
+  const promise = new Promise(function (resolve, reject) {
+    main((res) => {
+      resolve(res.statusCode)
+    }).on('error', (e) => {
+      reject(Error(e))
+    })
+  })
+  return promise;
 }
 
 main();
