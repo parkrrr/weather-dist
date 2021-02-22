@@ -33,7 +33,7 @@ async function getObservations(location, datetime) {
         "#locationid": "locationid",
         "#observationtime": "observationtime"
       },
-      "ScanIndexForward": true,
+      "ScanIndexForward": false,
       "Limit": 50
     };
 
