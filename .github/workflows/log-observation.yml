@@ -9,7 +9,7 @@ name: Publish log-observation to ECR
 
 defaults:
   run:
-    working-directory: lambda
+    working-directory: lambda/log-observation
 
 jobs:
   deploy:
