@@ -6,8 +6,6 @@ const pino = require('pino');
 
 const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 
-const zeroDate = "2000-01-01T00:00:00+00:00"
-
 AWS.config.update({
   region: "us-east-1"
 });
@@ -67,6 +65,6 @@ async function main() {
   await sendObservation(record);
 }
 
-exports.handler = async function(event) {
+exports.handler = async function() {
   return await main();
 }
