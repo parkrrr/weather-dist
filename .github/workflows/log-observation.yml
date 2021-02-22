@@ -1,11 +1,11 @@
 on:
   push:
       paths:
-        - 'lambda/**'
+        - 'lambda/log-observation/**'
       branches:
         - main
 
-name: Deploy to Amazon ECS
+name: Publish log-observation to ECR
 
 defaults:
   run:
@@ -35,7 +35,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: weather-data
+        ECR_REPOSITORY: log-observation
         IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
