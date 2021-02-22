@@ -40,7 +40,8 @@ async function getObservations(location, datetime) {
     let data = await docClient.query(params).promise();
     logger.info(`got back ${data.Count} (${data.ScannedCount} scanned)`);
 
-    return data;
+    let observations = data.Items.map(i => i.properties);
+    return observations;
   }
   catch (error) {
     logger.error('failed to get observations: ' + error)
