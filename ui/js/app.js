@@ -4,11 +4,13 @@ const apiUrl = "https://yg526bw8o1.execute-api.us-east-1.amazonaws.com/dev/obser
 function ViewModel() {
     var self = this;
 
-    self.latestObservation = ko.observable();
+    self.loading = ko.observable(true);
+    self.latestObservation = ko.observable({});
     self.observations = ko.observableArray([]);
 
     self.getObservations = async function () {
         try {
+            self.loading(true);
             var result = await $.ajax({
                 type: "GET",
                 url: apiUrl,
@@ -25,8 +27,7 @@ function ViewModel() {
             });
 
             self.latestObservation(self.observations()[0]);
-
-            console.log(self.observations()[0]);
+            
             var myChart = new Chart('chart', {
                 type: 'line',
                 data: {
@@ -52,6 +53,9 @@ function ViewModel() {
         }
         catch (error) {
             console.error(error);
+        }
+        finally {
+            self.loading(false);
         }
     }
 

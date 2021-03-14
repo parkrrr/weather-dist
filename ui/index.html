@@ -13,7 +13,9 @@
     <meta name="theme-color" content="#fafafa">
 </head>
 <body>
-    <h2 data-bind="text: latestObservation().toString()"></h2>
+    <h2 data-bind="hidden: loading, text: latestObservation().toString()"></h2>
+    <h2 data-bind="visible: loading">Loading...</h2>
+
     <canvas id="chart" width="100" height="100"></canvas>
 
     <script src="js/jquery-3.5.1.min.js"></script>
