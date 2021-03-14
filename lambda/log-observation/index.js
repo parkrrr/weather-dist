@@ -11,11 +11,10 @@ AWS.config.update({
 });
 
 var baseUrl = "https://api.weather.gov";
-var station = "KIND";
 
-async function getObservation() {
+async function getObservation(station) {
   try {
-    logger.info('retrieving observation')
+    logger.info(`retrieving observation (${station})`)
     let url = `${baseUrl}/stations/${station}/observations/latest`;
     logger.debug('url: ' + url);
     let record = await axios.get(url, { headers: { 'User-Agent': 'Axios' } });
@@ -37,9 +36,10 @@ async function getObservation() {
 
 async function sendObservation(observation) {
   try {
-    logger.info("sending observation");
+    let station = observation.properties.station;
+    logger.info(`sending observation (${station})`);
     let item = AWS.DynamoDB.Converter.marshall(observation);
-    item.locationid = { S: observation.properties.station };
+    item.locationid = { S: station };
     item.observationtime = { S: observation.properties.timestamp };
 
     var params = {
@@ -55,16 +55,49 @@ async function sendObservation(observation) {
   }
 }
 
+async function getStations() {
+  logger.info('getting stations');
+  let docClient = new AWS.DynamoDB.DocumentClient();
+  const params = {
+    "TableName": "weather-config",
+    "Limit": 1,
+    "KeyConditionExpression": "#name = :name",
+    "ExpressionAttributeValues": {
+      ":name": "stations",      
+    },
+    "ExpressionAttributeNames": {
+      "#name": "name"      
+    },
+  };
+
+  let data = await docClient.query(params).promise();
+  logger.info(`got back ${data.Count} (${data.ScannedCount} scanned)`);
+
+  let stations = data.Items;
+  return stations;
+}
+
 async function main() {
-  let record = await getObservation();
-  if (record == null) {
-    logger.fatal('failed to get observation');
+  let stationsConfig = await getStations();
+  if (stationsConfig.length != 1) {
+    logger.fatal('no stations configured');
     return;
   }
 
-  await sendObservation(record);
+  let stations = stationsConfig[0].stations;
+
+  stations.forEach(async function (s) {
+    let record = await getObservation(s);
+    if (record == null) {
+      logger.fatal('failed to get observation');
+      return;
+    }
+
+    await sendObservation(record);
+  });
 }
 
-exports.handler = async function() {
+exports.handler = async () => {
+  logger.info('starting');
   return await main();
 }
