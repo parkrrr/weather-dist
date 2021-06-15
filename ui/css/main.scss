@@ -1,0 +1,34 @@
+@import "chartist-settings.scss";
+@import "../bower_components/chartist/dist/scss/chartist.scss";
+
+body {
+    background-color: $background-color;
+    font-family: 'Quicksand', sans-serif;
+}
+
+.title {
+    text-align: center;
+    color: #ff6c11;
+}
+
+.loader {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url('../img/loading.png') 
+                50% 50% no-repeat $background-color;
+  }
+
+  /* Use this selector to override the line style on a given series */
+.ct-series-a .ct-line {
+    stroke: #ff6c11;
+  }
+  
+  .ct-series-a .ct-point {
+    /* Colour of your points */
+    stroke: #ff6c11;
+
+  }
