@@ -25,6 +25,7 @@ function ViewModel() {
                 let vm = new ObservationModel();
                 vm.timestamp(o.timestamp);
                 vm.pressure(pressure);
+                vm.readableTimestamp(moment(new Date(o.timestamp)).toString());
 
                 self.observations.push(vm);
             });
@@ -33,7 +34,7 @@ function ViewModel() {
 
 
 
-            var chart = new Chartist.Line('.chart', {
+            new Chartist.Line('.chart', {
                 series: [
                     {
                         name: 'series-1',
@@ -43,7 +44,7 @@ function ViewModel() {
             }, {
                 axisX: {
                     type: Chartist.FixedScaleAxis,
-                    divisor: 8,
+                    divisor: 9,
                     labelInterpolationFnc: function (value) {
                         return moment(value).format('ddd HH:mm');
                     }
@@ -78,6 +79,7 @@ function ObservationModel() {
 
     self.timestamp = ko.observable();
     self.pressure = ko.observable();
+    self.readableTimestamp = ko.observable();   
 
     self.toDataPoint = function () {
         return {

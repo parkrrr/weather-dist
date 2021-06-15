@@ -9,6 +9,14 @@ body {
 .title {
     text-align: center;
     color: #ff6c11;
+    font-weight:700;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    text-align: center;
+    color: #2de2e6;
+    font-weight:500;
 }
 
 .loader {
@@ -32,3 +40,15 @@ body {
     stroke: #ff6c11;
 
   }
+
+  svg.ct-chart-bar, svg.ct-chart-line{
+    overflow: visible;
+}
+.ct-label.ct-label.ct-horizontal.ct-end {
+  position: relative;
+  justify-content: flex-end;
+  text-align: right;
+  transform-origin: 100% 0;
+  transform: translate(-100%) rotate(-45deg);
+  white-space:nowrap;
+}
