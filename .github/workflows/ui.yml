@@ -17,12 +17,11 @@ jobs:
         with:
           node-version: 12
       - name: Build
+        working-directory: ./ui
         run: |
-          cd ui
           npm ci
           gulp build
-      - run: npm ci
-      - run: gulp build
+
 
   DeployPreview:
     name: Deploy UI (Preview)
