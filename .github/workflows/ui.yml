@@ -11,11 +11,16 @@ on:
 jobs:
   Build:
     runs-on: ubuntu-latest
-    working-directory: "ui"
+    
     steps:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
+      - name: Build
+        run: |
+          cd ui
+          npm ci
+          gulp build
       - run: npm ci
       - run: gulp build
 
