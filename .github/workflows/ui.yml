@@ -4,7 +4,9 @@ on:
   push:
       paths:
         - 'ui/**'
-      branches: [ main, dev ]
+      branches:
+        - main
+        - dev
 
 jobs:
   Build:
