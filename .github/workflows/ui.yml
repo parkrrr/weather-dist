@@ -27,7 +27,7 @@ jobs:
 
   DeployPreview:
     name: Deploy UI (Preview)
-    if: github.event_name == 'dev'
+    if: github.ref == 'refs/heads/dev'
     environment: 
       name: Preview
       url: https://weather-dev.parkrrr.net
@@ -44,7 +44,7 @@ jobs:
 
   DeployLive:
     name: Deploy UI (Live)
-    if: github.event_name == 'main'
+    if: github.ref == 'refs/heads/main'
     environment: 
       name: Live
       url: https://weather.parkrrr.net
