@@ -1,4 +1,5 @@
 const { series, parallel, src, dest } = require('gulp');
+const webpack = require('webpack-stream');
 var sass = require('gulp-sass');
 var del = require('del');
 
@@ -15,20 +16,11 @@ function cssTranspile(cb) {
     cb();
 }
 
-function cssMinify(cb) {
-    cb();
-}
-
-function jsTranspile(cb) {
-    cb();
-}
 
 function jsBundle(cb) {
-    src('./js/*.js').pipe(dest('./dist/js'));
-    cb();
-}
+    src('./js/lib/*.js').pipe(dest('./dist/js'));
+    src('js/*.js').pipe(webpack(require('./webpack.config.js'))).pipe(dest('dist/js/'));
 
-function jsMinify(cb) {
     cb();
 }
 
@@ -43,8 +35,7 @@ exports.build = series(
     clean,
     parallel(
         cssTranspile,
-        series(jsTranspile, jsBundle)
+        jsBundle
     ),
-    parallel(cssMinify, jsMinify),
     publish
 );
