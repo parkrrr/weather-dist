@@ -27,6 +27,7 @@ function jsBundle(cb) {
 function publish(cb) {
     src('./index.html').pipe(dest('./dist'));
     src('./img/*').pipe(dest('./dist/img'));
+    src('./favicon.ico').pipe(dest('./dist'));
     src('./*.png').pipe(dest('./dist'));
     cb();
 }
