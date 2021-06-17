@@ -8,10 +8,6 @@ on:
         - main
         - dev
 
-defaults:
-  run:
-    working-directory: ui
-
 jobs:
   Build:
     runs-on: ubuntu-latest
