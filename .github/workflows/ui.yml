@@ -17,8 +17,12 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - run: npm ci
-      - run: gulp build
+      - name: npm ci
+        working-directory: ui
+        run: npm ci
+      - name: gulp build
+        working-directory: ui
+        run: gulp build
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
