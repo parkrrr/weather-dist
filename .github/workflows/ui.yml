@@ -24,9 +24,9 @@ jobs:
       - run: npm ci
       - run: gulp build
       - name: Cache build
-        key: build
         uses: actions/cache@v2
         with:
+          key: build
           path: dist
 
   DeployPreview:
@@ -38,9 +38,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache build
-        uses: actions/cache@v2
-        key: build
+        uses: actions/cache@v2        
         with:
+          key: build
           path: dist
       - uses: shallwefootball/s3-upload-action@master
         with:
@@ -60,8 +60,8 @@ jobs:
     steps:
       - name: Cache build
         uses: actions/cache@v2
-        key: build
         with:
+          key: build
           path: dist
       - uses: shallwefootball/s3-upload-action@master
         with:
