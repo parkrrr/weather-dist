@@ -1,4 +1,4 @@
-const { series, parallel, src, dest } = require('gulp');
+const { series, parallel, src, dest, watch } = require('gulp');
 const webpack = require('webpack-stream');
 var sass = require('gulp-sass');
 var del = require('del');
@@ -40,3 +40,11 @@ exports.build = series(
     ),
     publish
 );
+
+exports.default = function() {
+    watch('css/*.scss', cssTranspile);
+    watch('js/*.js', series(clean, jsBundle));
+    watch('img/*', series(clean, publish));
+    watch('*.png', series(clean, publish));
+    watch('index.html', series(clean, publish));
+  };
