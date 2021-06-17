@@ -20,35 +20,44 @@ function ViewModel() {
             result.forEach(o => {
                 if (o.barometricPressure.value == null) return;
 
+                let pressure = self.pascalsToInchesMercury(o.barometricPressure.value);
+
                 let vm = new ObservationModel();
                 vm.timestamp(o.timestamp);
-                vm.pressure(self.pascalsToInchesMercury(o.barometricPressure.value));
+                vm.pressure(pressure);
+                vm.readableTimestamp(moment(new Date(o.timestamp)).toString());
+
                 self.observations.push(vm);
             });
 
             self.latestObservation(self.observations()[0]);
-            
-            var myChart = new Chart('chart', {
-                type: 'line',
-                data: {
-                    datasets: [{
+
+
+
+            new Chartist.Line('.chart', {
+                series: [
+                    {
+                        name: 'series-1',
                         data: self.observations().map(o => o.toDataPoint())
-                    }]
-                },
-                options: {
-                    legend: {
-                        display: false
-                    },
-                    //responsive: false,
-                    scales: {
-                        xAxes: [{
-                            type: 'time',
-                            time: {
-                                unit: 'hour'
-                            }
-                        }]
                     }
-                }
+                ]
+            }, {
+                axisX: {
+                    type: Chartist.FixedScaleAxis,
+                    divisor: 9,
+                    labelInterpolationFnc: function (value) {
+                        return moment(value).format('ddd HH:mm');
+                    }
+                },
+                axisY: {
+                    referenceValue: 29.92,
+                    labelInterpolationFnc: function (value) {
+                        return value.toFixed(2);
+                    }
+                },
+                lineSmooth: Chartist.Interpolation.cardinal({
+                    fillHoles: true,
+                })
             });
         }
         catch (error) {
@@ -71,6 +80,7 @@ function ObservationModel() {
 
     self.timestamp = ko.observable();
     self.pressure = ko.observable();
+    self.readableTimestamp = ko.observable();   
 
     self.toDataPoint = function () {
         return {
@@ -78,10 +88,12 @@ function ObservationModel() {
             y: self.pressure().toFixed(2)
         }
     }
-    
-    self.toString = function() {
-        return `${self.timestamp()} - ${self.pressure().toFixed(2)} inHg`
+
+    self.toString = function () {
+        let fixedPressure = self.pressure().toFixed(2);
+        let obs = moment(new Date(self.timestamp()));
+        return `${fixedPressure} inHg as of ${obs.from(moment().utc())}`;
     }
 }
 
-ko.applyBindings(new ViewModel()); 
+ko.applyBindings(new ViewModel());
