@@ -23,7 +23,10 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: gulp build
-
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: dist
 
   DeployPreview:
     name: Deploy UI (Preview)
@@ -33,7 +36,10 @@ jobs:
       url: https://weather-dev.parkrrr.net
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: dist
       - uses: shallwefootball/s3-upload-action@master
         with:
           aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -50,7 +56,10 @@ jobs:
       url: https://weather.parkrrr.net
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: dist
       - uses: shallwefootball/s3-upload-action@master
         with:
           aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
