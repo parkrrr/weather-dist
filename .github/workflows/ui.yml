@@ -30,6 +30,7 @@ jobs:
           path: dist
 
   DeployPreview:
+    needs: Build
     name: Deploy UI (Preview)
     if: github.ref == 'refs/heads/dev'
     environment: 
@@ -51,6 +52,7 @@ jobs:
           destination_dir:
 
   DeployLive:
+    needs: Build
     name: Deploy UI (Live)
     if: github.ref == 'refs/heads/main'
     environment: 
