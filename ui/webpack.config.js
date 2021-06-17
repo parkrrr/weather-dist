@@ -6,4 +6,4 @@ module.exports = {
     filename: 'app.js',
     path: path.resolve('./dist/js'),
   },
-}; 
+};
