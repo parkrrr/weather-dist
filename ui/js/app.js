@@ -50,6 +50,7 @@ function ViewModel() {
                     }
                 },
                 axisY: {
+                    referenceValue: 29.92,
                     labelInterpolationFnc: function (value) {
                         return value.toFixed(2);
                     }
