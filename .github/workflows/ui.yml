@@ -42,4 +42,4 @@ jobs:
         with:
           name: dist
       - name: Display structure of downloaded files
-        run: ls -R
+        run: ls ${{steps.download.outputs.download-path}}
