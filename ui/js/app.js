@@ -1,5 +1,5 @@
 import { VIEWS } from "./const";
-import { PressureView } from "./view";
+import { PressureView, TemperatureView } from "./view";
 
 function ViewModel() {
     var self = this;
@@ -18,6 +18,10 @@ function ViewModel() {
         switch (view) {
             case VIEWS.Pressure:
                 self.view(new PressureView());
+                break;
+            case VIEWS.Temperature:
+                self.view(new TemperatureView());
+                break;
         }
     }
 
@@ -66,7 +70,7 @@ function ViewModel() {
         });
     }
 
-    self.setView(null,null,VIEWS.Pressure);
+    self.setView(null,null,VIEWS.Temperature);
     self.initialize();
 }
 
