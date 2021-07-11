@@ -1,7 +1,7 @@
 'use strict';
 
 import { API_URL } from "./const";
-import { PressureModel, TemperatureModel } from "./datamodel";
+import { PressureModel, TemperatureModel, HumidityModel } from "./datamodel";
 
 
 export class View {   
@@ -63,6 +63,32 @@ export class TemperatureView extends View {
         results.forEach(o => {
             if (o.temperature.value == null) return;
             let model = new TemperatureModel(o.timestamp, o.temperature.value);
+            super.values.push(model);
+        });
+
+        return super.values;
+    }
+}
+
+export class HumidityView extends View {
+    constructor() {
+        super();
+    }
+
+    referenceValue() {
+        return null;
+    }
+
+    labelInterpolationFnc(value) {
+        return value.toFixed(0);
+    }
+
+    async loadValues() {
+        let results = await super.load();
+
+        results.forEach(o => {
+            if (o.relativeHumidity.value == null) return;
+            let model = new HumidityModel(o.timestamp, o.relativeHumidity.value);
             super.values.push(model);
         });
 
