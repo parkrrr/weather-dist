@@ -26,6 +26,11 @@
 
     <div class="chart ct-minor-second"></div>
 
+    <div class="view-container">
+        <span class="view" data-bind="click: function(data, event) { setView(data, event, views.Temperature) }">Temperature</span>
+        <span class="view" data-bind="click: function(data, event) { setView(data, event, views.Pressure) }">Pressure</span>        
+    </div>
+
     <script src="js/jquery-3.5.1.min.js"></script>
     <script src="js/knockout-3.5.1.js"></script>
     <script src="js/moment.min.js"></script>

@@ -6,7 +6,8 @@ function ViewModel() {
 
     self.views = VIEWS;
 
-    self.view = ko.observable(VIEWS.Pressure);
+    self.view = ko.observable(new PressureView());
+
     self.loading = ko.observable(true);
 
     self.title = ko.observable();
@@ -23,10 +24,14 @@ function ViewModel() {
                 self.view(new TemperatureView());
                 break;
         }
+
+        self.initialize();
     }
 
     self.initialize = async function() {
         try {
+            self.loading(true);
+
             let values = await self.view().loadValues();
             self.observations(values);
 
@@ -70,7 +75,6 @@ function ViewModel() {
         });
     }
 
-    self.setView(null,null,VIEWS.Temperature);
     self.initialize();
 }
 
