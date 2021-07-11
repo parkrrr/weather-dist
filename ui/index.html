@@ -20,8 +20,8 @@
     <meta name="theme-color" content="#261447">
 </head>
 <body>
-    <h2 class="title" data-bind="hidden: loading, text: latestObservation().toString()"></h2>
-    <h2 class="subtitle" data-bind="hidden: loading, text: latestObservation().readableTimestamp"></h2>
+    <h2 class="title" data-bind="hidden: loading, text: title()"></h2>
+    <h2 class="subtitle" data-bind="hidden: loading, text: subtitle()"></h2>
     <div data-bind="visible: loading" class="loader"></div>
 
     <div class="chart ct-minor-second"></div>

@@ -1,64 +1,36 @@
-const apiUrl = "https://yg526bw8o1.execute-api.us-east-1.amazonaws.com/dev/observations?location=KIND"
-
+import { VIEWS } from "./const";
+import { PressureView } from "./view";
 
 function ViewModel() {
     var self = this;
 
+    self.views = VIEWS;
+
+    self.view = ko.observable(VIEWS.Pressure);
     self.loading = ko.observable(true);
-    self.latestObservation = ko.observable({});
+
+    self.title = ko.observable();
+    self.subtitle = ko.observable();
+
     self.observations = ko.observableArray([]);
 
-    self.getObservations = async function () {
+    self.setView = function(data, event, view) {
+        switch (view) {
+            case VIEWS.Pressure:
+                self.view(new PressureView());
+        }
+    }
+
+    self.initialize = async function() {
         try {
-            self.loading(true);
-            var result = await $.ajax({
-                type: "GET",
-                url: apiUrl,
-                crossDomain: true
-            });
+            let values = await self.view().loadValues();
+            self.observations(values);
 
-            result.forEach(o => {
-                if (o.barometricPressure.value == null) return;
+            let latestObservation = self.observations()[0];
+            self.title(latestObservation.toString());
+            self.subtitle(latestObservation.readableTimeStamp());
 
-                let pressure = self.pascalsToInchesMercury(o.barometricPressure.value);
-
-                let vm = new ObservationModel();
-                vm.timestamp(o.timestamp);
-                vm.pressure(pressure);
-                vm.readableTimestamp(moment(new Date(o.timestamp)).toString());
-
-                self.observations.push(vm);
-            });
-
-            self.latestObservation(self.observations()[0]);
-
-
-
-            new Chartist.Line('.chart', {
-                series: [
-                    {
-                        name: 'series-1',
-                        data: self.observations().map(o => o.toDataPoint())
-                    }
-                ]
-            }, {
-                axisX: {
-                    type: Chartist.FixedScaleAxis,
-                    divisor: 9,
-                    labelInterpolationFnc: function (value) {
-                        return moment(value).format('ddd HH:mm');
-                    }
-                },
-                axisY: {
-                    referenceValue: 29.92,
-                    labelInterpolationFnc: function (value) {
-                        return value.toFixed(2);
-                    }
-                },
-                lineSmooth: Chartist.Interpolation.cardinal({
-                    fillHoles: true,
-                })
-            });
+            self.createChart();
         }
         catch (error) {
             console.error(error);
@@ -68,32 +40,34 @@ function ViewModel() {
         }
     }
 
-    self.pascalsToInchesMercury = function (pa) {
-        return pa * 0.0002953;
+    self.createChart = function() {
+        new Chartist.Line('.chart', {
+            series: [
+                {
+                    name: 'series-1',
+                    data: self.observations().map(o => o.toDataPoint())
+                }
+            ]
+        }, {
+            axisX: {
+                type: Chartist.FixedScaleAxis,
+                divisor: 9,
+                labelInterpolationFnc: function (value) {
+                    return moment(value).format('ddd HH:mm');
+                }
+            },
+            axisY: {
+                referenceValue: self.view().referenceValue(),
+                labelInterpolationFnc: self.view().labelInterpolationFnc
+            },
+            lineSmooth: Chartist.Interpolation.cardinal({
+                fillHoles: true,
+            })
+        });
     }
 
-    self.getObservations();
-}
-
-function ObservationModel() {
-    var self = this;
-
-    self.timestamp = ko.observable();
-    self.pressure = ko.observable();
-    self.readableTimestamp = ko.observable();   
-
-    self.toDataPoint = function () {
-        return {
-            x: new Date(self.timestamp()),
-            y: self.pressure().toFixed(2)
-        }
-    }
-
-    self.toString = function () {
-        let fixedPressure = self.pressure().toFixed(2);
-        let obs = moment(new Date(self.timestamp()));
-        return `${fixedPressure} inHg as of ${obs.from(moment().utc())}`;
-    }
+    self.setView(null,null,VIEWS.Pressure);
+    self.initialize();
 }
 
 ko.applyBindings(new ViewModel());
