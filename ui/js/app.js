@@ -13,9 +13,10 @@ function ViewModel() {
     self.title = ko.observable();
     self.subtitle = ko.observable();
 
+    self.rawObservations = ko.observableArray([]);
     self.observations = ko.observableArray([]);
 
-    self.setView = function(data, event, view) {
+    self.setView = async function (data, event, view) {
         switch (view) {
             case VIEWS.Pressure:
                 self.view(new PressureView());
@@ -28,15 +29,19 @@ function ViewModel() {
                 break;
         }
 
-        self.initialize();
+        await self.initialize();
     }
 
-    self.initialize = async function() {
+    self.initialize = async function () {
         try {
             self.loading(true);
 
-            let values = await self.view().loadValues();
-            self.observations(values);
+            if (self.rawObservations().length === 0) {
+                let values = await self.load();
+                self.rawObservations(values);
+            }
+
+            self.observations(self.view().parseValues(self.rawObservations()));
 
             let latestObservation = self.observations()[0];
             self.title(latestObservation.toString());
@@ -52,7 +57,40 @@ function ViewModel() {
         }
     }
 
-    self.createChart = function() {
+    self.load = async function () {
+        const refDate = new Date();
+        refDate.setDate(refDate.getDate() - 3);
+        const startDate = refDate.toISOString();
+
+        console.debug(`start date: ${startDate}`);
+
+        const response = await fetch(new Request(`https://api.weather.gov/stations/KIND/observations?limit=25&start=${startDate}`, {
+            method: 'GET',
+            headers: new Headers({
+                'Accept': 'application/geo+json',
+                'User-Agent': 'https://weather.parkrrr.net/',
+            }),
+        }));
+        
+        const data = await response.json();
+        const observations = data.features.map((r) => r.properties);
+
+        observations.sort(function (a, b) {
+            if (!a.timestamp && !b.timestamp) {
+                return 0;
+            } else if (!a.timestamp) {
+                return 1;
+            } else if (!b.timestamp) {
+                return -1;
+            }
+
+            return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+        });
+
+        return observations;
+    }
+
+    self.createChart = function () {
         new Chartist.Line('.chart', {
             series: [
                 {
