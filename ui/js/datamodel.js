@@ -4,7 +4,7 @@ export class DataModel {
     }
 
     readableTimeStamp() {
-        return moment(new Date(this.timestamp)).toString();
+        return new Date(this.timestamp).toLocaleString(navigator.language, { timeZoneName: 'short' });
     }
 }
 
@@ -24,11 +24,6 @@ export class PressureModel extends DataModel {
             x: new Date(this.timestamp),
             y: this.value.toFixed(2)
         }
-    }
-
-    toString() {
-        let obs = moment(new Date(this.timestamp));
-        return `${this.formatValue()} as of ${obs.from(moment().utc())}`;
     }
 
     pascalsToInchesMercury(pa) {
@@ -54,11 +49,6 @@ export class TemperatureModel extends DataModel {
         }
     }
 
-    toString() {
-        let obs = moment(new Date(this.timestamp));
-        return `${this.formatValue()} as of ${obs.from(moment().utc())}`;
-    }
-
     celciusToFahrenheit(c) {
         return (c * 1.8) + 32;
     }
@@ -80,10 +70,5 @@ export class HumidityModel extends DataModel {
             x: new Date(this.timestamp),
             y: this.value.toFixed(0)
         }
-    }
-
-    toString() {
-        let obs = moment(new Date(this.timestamp));
-        return `${this.formatValue()} as of ${obs.from(moment().utc())}`;
     }
 }

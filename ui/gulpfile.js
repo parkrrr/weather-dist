@@ -1,6 +1,7 @@
 const { series, parallel, src, dest, watch } = require('gulp');
 const webpack = require('webpack-stream');
-var sass = require('gulp-sass');
+const webpackConfig = require('./webpack.config.js');
+const sass = require('gulp-sass')(require('sass'));
 var del = require('del');
 
 function clean(cb) {
@@ -19,7 +20,7 @@ function cssTranspile(cb) {
 
 function jsBundle(cb) {
     src('./js/lib/*.js').pipe(dest('./dist/js'));
-    src('js/*.js').pipe(webpack(require('./webpack.config.js'))).pipe(dest('dist/js/'));
+    src('js/*.js').pipe(webpack(webpackConfig)).pipe(dest('dist/js/'));
 
     cb();
 }
@@ -29,6 +30,7 @@ function publish(cb) {
     src('./img/*').pipe(dest('./dist/img'));
     src('./favicon.ico').pipe(dest('./dist'));
     src('./*.png').pipe(dest('./dist'));
+    src('./site.webmanifest').pipe(dest('./dist'));
     cb();
 }
 

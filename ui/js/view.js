@@ -1,28 +1,8 @@
 'use strict';
 
-import { API_URL } from "./const";
 import { PressureModel, TemperatureModel, HumidityModel } from "./datamodel";
 
-
-export class View {   
-    constructor() {
-        View.prototype.values = [];
-    }
-
-    async load() {
-        return await $.ajax({
-            type: "GET",
-            url: API_URL,
-            crossDomain: true
-        });
-    }
-}
-
-export class PressureView extends View {
-    constructor() {
-        super();
-    }
-
+export class PressureView {  
     referenceValue() {
         return 29.92;
     }
@@ -31,24 +11,19 @@ export class PressureView extends View {
         return value.toFixed(2);
     }
 
-    async loadValues() {
-        let results = await super.load();
-
-        results.forEach(o => {
+    parseValues(values) {
+        var parsedValues = [];
+        values.forEach(o => {
             if (o.barometricPressure.value == null) return;
             let model = new PressureModel(o.timestamp, o.barometricPressure.value);
-            super.values.push(model);
+            parsedValues.push(model);
         });
 
-        return super.values;
+        return parsedValues;
     }
 }
 
-export class TemperatureView extends View {
-    constructor() {
-        super();
-    }
-
+export class TemperatureView {
     referenceValue() {
         return null;
     }
@@ -57,24 +32,19 @@ export class TemperatureView extends View {
         return value.toFixed(0);
     }
 
-    async loadValues() {
-        let results = await super.load();
-
-        results.forEach(o => {
+    parseValues(values) {
+        var parsedValues = [];
+        values.forEach(o => {
             if (o.temperature.value == null) return;
             let model = new TemperatureModel(o.timestamp, o.temperature.value);
-            super.values.push(model);
+            parsedValues.push(model);
         });
 
-        return super.values;
+        return parsedValues;
     }
 }
 
-export class HumidityView extends View {
-    constructor() {
-        super();
-    }
-
+export class HumidityView {
     referenceValue() {
         return null;
     }
@@ -83,15 +53,14 @@ export class HumidityView extends View {
         return value.toFixed(0);
     }
 
-    async loadValues() {
-        let results = await super.load();
-
-        results.forEach(o => {
+    parseValues(values) {
+        var parsedValues = [];
+        values.forEach(o => {
             if (o.relativeHumidity.value == null) return;
             let model = new HumidityModel(o.timestamp, o.relativeHumidity.value);
-            super.values.push(model);
+            parsedValues.push(model);
         });
 
-        return super.values;
+        return parsedValues;
     }
 }
