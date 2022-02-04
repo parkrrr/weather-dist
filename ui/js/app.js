@@ -1,64 +1,53 @@
-const apiUrl = "https://yg526bw8o1.execute-api.us-east-1.amazonaws.com/dev/observations?location=KIND"
-
+import { VIEWS } from "./const";
+import { HumidityView, PressureView, TemperatureView } from "./view";
 
 function ViewModel() {
     var self = this;
 
+    self.views = VIEWS;
+
+    self.view = ko.observable(new PressureView());
+
     self.loading = ko.observable(true);
-    self.latestObservation = ko.observable({});
+
+    self.title = ko.observable();
+    self.subtitle = ko.observable();
+
+    self.rawObservations = ko.observableArray([]);
     self.observations = ko.observableArray([]);
 
-    self.getObservations = async function () {
+    self.setView = async function (data, event, view) {
+        switch (view) {
+            case VIEWS.Pressure:
+                self.view(new PressureView());
+                break;
+            case VIEWS.Temperature:
+                self.view(new TemperatureView());
+                break;
+            case VIEWS.Humidity:
+                self.view(new HumidityView());
+                break;
+        }
+
+        await self.initialize();
+    }
+
+    self.initialize = async function () {
         try {
             self.loading(true);
-            var result = await $.ajax({
-                type: "GET",
-                url: apiUrl,
-                crossDomain: true
-            });
 
-            result.forEach(o => {
-                if (o.barometricPressure.value == null) return;
+            if (self.rawObservations().length === 0) {
+                let values = await self.load();
+                self.rawObservations(values);
+            }
 
-                let pressure = self.pascalsToInchesMercury(o.barometricPressure.value);
+            self.observations(self.view().parseValues(self.rawObservations()));
 
-                let vm = new ObservationModel();
-                vm.timestamp(o.timestamp);
-                vm.pressure(pressure);
-                vm.readableTimestamp(moment(new Date(o.timestamp)).toString());
+            let latestObservation = self.observations()[0];
+            self.title(self.formatTitle(latestObservation));
+            self.subtitle(latestObservation.readableTimeStamp());
 
-                self.observations.push(vm);
-            });
-
-            self.latestObservation(self.observations()[0]);
-
-
-
-            new Chartist.Line('.chart', {
-                series: [
-                    {
-                        name: 'series-1',
-                        data: self.observations().map(o => o.toDataPoint())
-                    }
-                ]
-            }, {
-                axisX: {
-                    type: Chartist.FixedScaleAxis,
-                    divisor: 9,
-                    labelInterpolationFnc: function (value) {
-                        return moment(value).format('ddd HH:mm');
-                    }
-                },
-                axisY: {
-                    referenceValue: 29.92,
-                    labelInterpolationFnc: function (value) {
-                        return value.toFixed(2);
-                    }
-                },
-                lineSmooth: Chartist.Interpolation.cardinal({
-                    fillHoles: true,
-                })
-            });
+            self.createChart();
         }
         catch (error) {
             console.error(error);
@@ -68,32 +57,98 @@ function ViewModel() {
         }
     }
 
-    self.pascalsToInchesMercury = function (pa) {
-        return pa * 0.0002953;
-    }
+    self.formatTitle = function (model) {
+        const rtf = new Intl.RelativeTimeFormat("en", {
+            localeMatcher: "best fit",
+            numeric: "auto",
+        });
 
-    self.getObservations();
-}
+        const dateDiff = (new Date(model.timestamp).getTime() - Date.now()) / 1000;
+        var second = 1,
+            minute = second * 60,
+            hour = minute * 60,
+            day = hour * 24;
 
-function ObservationModel() {
-    var self = this;
+        let relativeDateString = '';
+        const absDateDiff = Math.abs(dateDiff);
 
-    self.timestamp = ko.observable();
-    self.pressure = ko.observable();
-    self.readableTimestamp = ko.observable();   
-
-    self.toDataPoint = function () {
-        return {
-            x: new Date(self.timestamp()),
-            y: self.pressure().toFixed(2)
+        if (absDateDiff > day) {
+            relativeDateString = rtf.format(Math.floor(dateDiff / day), 'day');
+        } else if (absDateDiff > hour) {
+            relativeDateString = rtf.format(Math.floor(dateDiff / hour), 'hour');
+        } else if (absDateDiff > minute) {
+            relativeDateString = rtf.format(Math.floor(dateDiff / minute), 'minute');
+        } else {
+            relativeDateString = rtf.format(Math.floor(dateDiff / second), 'second');
         }
+
+        return `${model.formatValue()} as of ${relativeDateString}`;
     }
 
-    self.toString = function () {
-        let fixedPressure = self.pressure().toFixed(2);
-        let obs = moment(new Date(self.timestamp()));
-        return `${fixedPressure} inHg as of ${obs.from(moment().utc())}`;
+    self.load = async function () {
+        const refDate = new Date();
+        refDate.setDate(refDate.getDate() - 3);
+        const startDate = refDate.toISOString();
+
+        console.debug(`start date: ${startDate}`);
+
+        const response = await fetch(new Request(`https://api.weather.gov/stations/KIND/observations?limit=25&start=${startDate}`, {
+            method: 'GET',
+            headers: new Headers({
+                'Accept': 'application/geo+json',
+                'User-Agent': 'https://weather.parkrrr.net/',
+            }),
+        }));
+        
+        const data = await response.json();
+        const observations = data.features.map((r) => r.properties);
+
+        observations.sort(function (a, b) {
+            if (!a.timestamp && !b.timestamp) {
+                return 0;
+            } else if (!a.timestamp) {
+                return 1;
+            } else if (!b.timestamp) {
+                return -1;
+            }
+
+            return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+        });
+
+        return observations;
     }
+
+    self.createChart = function () {
+        new Chartist.Line('.chart', {
+            series: [
+                {
+                    name: 'series-1',
+                    data: self.observations().map(o => o.toDataPoint())
+                }
+            ]
+        }, {
+            axisX: {
+                type: Chartist.FixedScaleAxis,
+                divisor: 9,
+                labelInterpolationFnc: function (value) {
+                    return new Intl.DateTimeFormat('en-GB', {
+                        weekday: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    }).format(new Date(value));
+                }
+            },
+            axisY: {
+                referenceValue: self.view().referenceValue(),
+                labelInterpolationFnc: self.view().labelInterpolationFnc
+            },
+            lineSmooth: Chartist.Interpolation.cardinal({
+                fillHoles: true,
+            })
+        });
+    }
+
+    self.initialize();
 }
 
 ko.applyBindings(new ViewModel());

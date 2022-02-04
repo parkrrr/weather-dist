@@ -19,6 +19,21 @@ body {
     font-weight:500;
 }
 
+.view-container {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.view {
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #0d0221;
+  text-align: center;
+  color: #2de2e6;
+  font-weight:500;
+  padding: 5px;
+}
+
 .loader {
     position: fixed;
     left: 0px;
