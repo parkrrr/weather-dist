@@ -4,9 +4,6 @@ on:
   push:
       paths:
         - 'ui/**'
-      branches:
-        - main
-        - dev
 
 jobs:
   Build:
