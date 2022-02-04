@@ -44,7 +44,7 @@ function ViewModel() {
             self.observations(self.view().parseValues(self.rawObservations()));
 
             let latestObservation = self.observations()[0];
-            self.title(latestObservation.toString());
+            self.title(self.formatTitle(latestObservation));
             self.subtitle(latestObservation.readableTimeStamp());
 
             self.createChart();
@@ -55,6 +55,34 @@ function ViewModel() {
         finally {
             self.loading(false);
         }
+    }
+
+    self.formatTitle = function (model) {
+        const rtf = new Intl.RelativeTimeFormat("en", {
+            localeMatcher: "best fit",
+            numeric: "auto",
+        });
+
+        const dateDiff = (new Date(model.timestamp).getTime() - Date.now()) / 1000;
+        var second = 1,
+            minute = second * 60,
+            hour = minute * 60,
+            day = hour * 24;
+
+        let relativeDateString = '';
+        const absDateDiff = Math.abs(dateDiff);
+
+        if (absDateDiff > day) {
+            relativeDateString = rtf.format(Math.floor(dateDiff / day), 'day');
+        } else if (absDateDiff > hour) {
+            relativeDateString = rtf.format(Math.floor(dateDiff / hour), 'hour');
+        } else if (absDateDiff > minute) {
+            relativeDateString = rtf.format(Math.floor(dateDiff / minute), 'minute');
+        } else {
+            relativeDateString = rtf.format(Math.floor(dateDiff / second), 'second');
+        }
+
+        return `${model.formatValue()} as of ${relativeDateString}`;
     }
 
     self.load = async function () {
@@ -103,7 +131,11 @@ function ViewModel() {
                 type: Chartist.FixedScaleAxis,
                 divisor: 9,
                 labelInterpolationFnc: function (value) {
-                    return moment(value).format('ddd HH:mm');
+                    return new Intl.DateTimeFormat('en-GB', {
+                        weekday: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    }).format(new Date(value));
                 }
             },
             axisY: {

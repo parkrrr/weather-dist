@@ -4,7 +4,7 @@ export class DataModel {
     }
 
     readableTimeStamp() {
-        return moment(new Date(this.timestamp)).toString();
+        return new Date(this.timestamp).toLocaleString(navigator.language, { timeZoneName: 'short' });
     }
 }
 
