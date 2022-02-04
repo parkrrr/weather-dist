@@ -30,6 +30,7 @@ function publish(cb) {
     src('./img/*').pipe(dest('./dist/img'));
     src('./favicon.ico').pipe(dest('./dist'));
     src('./*.png').pipe(dest('./dist'));
+    src('./site.webmanifest').pipe(dest('./dist'));
     cb();
 }
 
