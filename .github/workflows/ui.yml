@@ -1,9 +1,7 @@
 name: Build UI
 
 on:
-  push:
-      paths:
-        - 'ui/**'
+  push
 
 jobs:
   Build:
@@ -15,16 +13,14 @@ jobs:
         with:
           node-version: 12
       - name: npm ci
-        working-directory: ui
         run: npm ci
       - name: gulp build
-        working-directory: ui
         run: gulp build
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
           name: dist
-          path: ui/dist
+          path: dist
   
   DeployPreview:
     needs: Build
