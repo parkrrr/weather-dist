@@ -1,5 +1,6 @@
 export const VIEWS = {
     Pressure: "Pressue",
     Temperature: "Temperature",
-    Humidity: "Humidity"
+    Humidity: "Humidity",
+    Dewpoint: "Dew Point"
 }

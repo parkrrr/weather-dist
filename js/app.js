@@ -1,5 +1,5 @@
 import { VIEWS } from "./const";
-import { HumidityView, PressureView, TemperatureView } from "./view";
+import { DewpointView, HumidityView, PressureView, TemperatureView } from "./view";
 
 function ViewModel() {
     var self = this;
@@ -26,6 +26,9 @@ function ViewModel() {
                 break;
             case VIEWS.Humidity:
                 self.view(new HumidityView());
+                break;
+            case VIEWS.Dewpoint:
+                self.view(new DewpointView());
                 break;
         }
 

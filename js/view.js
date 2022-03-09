@@ -64,3 +64,24 @@ export class HumidityView {
         return parsedValues;
     }
 }
+
+export class DewpointView {  
+    referenceValue() {
+        return null;
+    }
+
+    labelInterpolationFnc(value) {
+        return value.toFixed(0);
+    }
+
+    parseValues(values) {
+        var parsedValues = [];
+        values.forEach(o => {
+            if (o.temperature.value == null) return;
+            let model = new TemperatureModel(o.timestamp, o.dewpoint.value);
+            parsedValues.push(model);
+        });
+
+        return parsedValues;
+    }
+}
