@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const webpackConfig = require('./webpack.config.js');
 const sass = require('gulp-sass')(require('sass'));
+var argv = require('yargs').argv;
 var del = require('del');
 
 function clean(cb) {
@@ -18,11 +19,15 @@ function cssTranspile(cb) {
     cb();
 }
 
-
 function jsBundle(cb) {
     src('./js/lib/*.js').pipe(dest('./dist/js'));
-    src('js/*.js').pipe(webpackStream(webpackConfig, webpack)).pipe(dest('dist/js/'));
 
+    const config = webpackConfig;
+    if (argv.debug) {
+        config.mode = 'development';
+    }
+
+    src('js/*.js').pipe(webpackStream(config, webpack)).pipe(dest('dist/js/'));
     cb();
 }
 
