@@ -1,18 +1,24 @@
-export class DataModel {
-    constructor(timestamp) {
-        this.timestamp = timestamp;
-    }
+export function pascalsToInchesMercury(pascals) { return pascals * 0.0002953 };
+export function celciusToFahrenheit(c) { return (c * 1.8) + 32; }
 
-    readableTimeStamp() {
-        return new Date(this.timestamp).toLocaleString(navigator.language, { timeZoneName: 'short' });
+class DataModel {
+    constructor(timestamp, value) {
+        this.timestamp = timestamp;
+        this.value = value;
     }
+    formatValue() { return value; }
+    toDataPoint() { return {
+        x: new Date(this.timestamp),
+        y: this.value.toFixed(0)
+    } };
+    parseValues(v) { return [...v]; }
+    readableTimeStamp = () => new Date(this.timestamp).toLocaleString(navigator.language, { timeZoneName: 'short' });
 }
 
 export class PressureModel extends DataModel {
     constructor(timestamp, val) {
         super(timestamp);
-
-        this.value = this.pascalsToInchesMercury(val);
+        this.value = pascalsToInchesMercury(val);
     }
 
     formatValue() {
@@ -25,50 +31,26 @@ export class PressureModel extends DataModel {
             y: this.value.toFixed(2)
         }
     }
-
-    pascalsToInchesMercury(pa) {
-        return pa * 0.0002953;
-    }
 }
 
 export class TemperatureModel extends DataModel {
     constructor(timestamp, val) {
         super(timestamp);
-
-        this.value = this.celciusToFahrenheit(val);
+        this.value = celciusToFahrenheit(val);
     }
 
     formatValue() {
         return `${this.value.toFixed(0)} °F`;
-    }
-
-    toDataPoint() {
-        return {
-            x: new Date(this.timestamp),
-            y: this.value.toFixed(0)
-        }
-    }
-
-    celciusToFahrenheit(c) {
-        return (c * 1.8) + 32;
     }
 }
 
 export class HumidityModel extends DataModel {
     constructor(timestamp, val) {
         super(timestamp);
-
         this.value = val;
     }
 
     formatValue() {
         return `${this.value.toFixed(0)}%`;
-    }
-
-    toDataPoint() {
-        return {
-            x: new Date(this.timestamp),
-            y: this.value.toFixed(0)
-        }
     }
 }

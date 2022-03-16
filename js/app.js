@@ -1,12 +1,12 @@
 import { VIEWS } from "./const";
-import { DewpointView, HumidityView, PressureView, TemperatureView } from "./view";
+import { humidityView, pressureView, temperatureView, dewpointView } from "./view";
 
 function ViewModel() {
     var self = this;
 
     self.views = VIEWS;
 
-    self.view = ko.observable(new PressureView());
+    self.view = ko.observable(pressureView);
 
     self.loading = ko.observable(true);
 
@@ -19,16 +19,16 @@ function ViewModel() {
     self.setView = async function (data, event, view) {
         switch (view) {
             case VIEWS.Pressure:
-                self.view(new PressureView());
+                self.view(pressureView);
                 break;
             case VIEWS.Temperature:
-                self.view(new TemperatureView());
+                self.view(temperatureView);
                 break;
             case VIEWS.Humidity:
-                self.view(new HumidityView());
+                self.view(humidityView);
                 break;
             case VIEWS.Dewpoint:
-                self.view(new DewpointView());
+                self.view(dewpointView);
                 break;
         }
 
@@ -99,7 +99,7 @@ function ViewModel() {
             method: 'GET',
             headers: new Headers({
                 'Accept': 'application/geo+json',
-                'User-Agent': 'https://weather.parkrrr.net/',
+                'User-Agent': 'https://github.com/parkrrr/weather',
             }),
         }));
         

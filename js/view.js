@@ -1,87 +1,40 @@
-'use strict';
-
 import { PressureModel, TemperatureModel, HumidityModel } from "./datamodel";
 
-export class PressureView {  
-    referenceValue() {
-        return 29.92;
+class View {
+    constructor(name, nullCheck, factory) {
+        this.name = name;
+        this.nullCheck = nullCheck;
+        this.factory = factory;
     }
-
-    labelInterpolationFnc(value) {
-        return value.toFixed(2);
-    }
-
+    referenceValue() { return null; }
+    labelInterpolationFnc(v) { return v.toFixed(0); }
     parseValues(values) {
         var parsedValues = [];
-        values.forEach(o => {
-            if (o.barometricPressure.value == null) return;
-            let model = new PressureModel(o.timestamp, o.barometricPressure.value);
-            parsedValues.push(model);
+        values.forEach(v => {
+            if (this.nullCheck(v)) return;
+            parsedValues.push(this.factory(v));
         });
-
+    
         return parsedValues;
     }
 }
 
-export class TemperatureView {
-    referenceValue() {
-        return null;
-    }
+const pressureView = new View("Pressure",
+    (v) => v.barometricPressure.value == null,
+    (v) => new PressureModel(v.timestamp, v.barometricPressure.value));
+pressureView.referenceValue = () => 29.92;
+pressureView.labelInterpolationFnc = (v) => v.toFixed(2);
 
-    labelInterpolationFnc(value) {
-        return value.toFixed(0);
-    }
+const temperatureView = new View("Temperature",
+    (v) => v.temperature.value == null,
+    (v) => new TemperatureModel(v.timestamp, v.temperature.value));
 
-    parseValues(values) {
-        var parsedValues = [];
-        values.forEach(o => {
-            if (o.temperature.value == null) return;
-            let model = new TemperatureModel(o.timestamp, o.temperature.value);
-            parsedValues.push(model);
-        });
+const humidityView = new View("Humidity",
+    (v) => v.relativeHumidity.value == null,
+    (v) => new HumidityModel(v.timestamp, v.relativeHumidity.value));
 
-        return parsedValues;
-    }
-}
+const dewpointView = new View("Dew Point",
+    (v) => v.dewpoint.value == null,
+    (v) => new TemperatureModel(v.timestamp, v.dewpoint.value));
 
-export class HumidityView {
-    referenceValue() {
-        return null;
-    }
-
-    labelInterpolationFnc(value) {
-        return value.toFixed(0);
-    }
-
-    parseValues(values) {
-        var parsedValues = [];
-        values.forEach(o => {
-            if (o.relativeHumidity.value == null) return;
-            let model = new HumidityModel(o.timestamp, o.relativeHumidity.value);
-            parsedValues.push(model);
-        });
-
-        return parsedValues;
-    }
-}
-
-export class DewpointView {  
-    referenceValue() {
-        return null;
-    }
-
-    labelInterpolationFnc(value) {
-        return value.toFixed(0);
-    }
-
-    parseValues(values) {
-        var parsedValues = [];
-        values.forEach(o => {
-            if (o.temperature.value == null) return;
-            let model = new TemperatureModel(o.timestamp, o.dewpoint.value);
-            parsedValues.push(model);
-        });
-
-        return parsedValues;
-    }
-}
+export { pressureView, temperatureView, humidityView, dewpointView };
