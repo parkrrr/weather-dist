@@ -20,6 +20,7 @@ function cssTranspile(cb) {
 }
 
 function jsBundle(cb) {
+    src('./node_modules/chartist/dist/chartist.min.js*').pipe(dest('./dist/js'))
     src('./js/lib/*.js').pipe(dest('./dist/js'));
 
     const config = webpackConfig;
