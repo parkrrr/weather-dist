@@ -10,6 +10,7 @@ function ViewModel() {
 
     self.loading = ko.observable(true);
 
+    self.airport = ko.observable();
     self.title = ko.observable();
     self.subtitle = ko.observable();
 
@@ -42,6 +43,10 @@ function ViewModel() {
         try {
             self.loading(true);
 
+            const urlParams = new URLSearchParams(window.location.search);
+            const airport = urlParams.get('a').toUpperCase();
+            self.airport(airport);
+
             if (self.rawObservations().length === 0) {
                 let values = await self.load();
                 self.rawObservations(values);
@@ -51,7 +56,7 @@ function ViewModel() {
 
             let latestObservation = self.observations()[0];
             self.title(self.formatTitle(latestObservation));
-            self.subtitle(latestObservation.readableTimeStamp());
+            self.subtitle(`${self.airport()} at ${latestObservation.readableTimeStamp()}`);
 
             self.createChart();
         }
@@ -96,9 +101,7 @@ function ViewModel() {
         refDate.setDate(refDate.getDate() - 3);
         const startDate = refDate.toISOString();
 
-        console.debug(`start date: ${startDate}`);
-
-        const response = await fetch(new Request(`https://api.weather.gov/stations/KIND/observations?limit=25&start=${startDate}`, {
+        const response = await fetch(new Request(`https://api.weather.gov/stations/${self.airport()}/observations?limit=25&start=${startDate}`, {
             method: 'GET',
             headers: new Headers({
                 'Accept': 'application/geo+json',
