@@ -44,8 +44,16 @@ function ViewModel() {
             self.loading(true);
 
             const urlParams = new URLSearchParams(window.location.search);
-            const airport = urlParams.get('a').toUpperCase();
-            self.airport(airport);
+            if (urlParams == null || urlParams.entries.length == 0) {
+                self.airport('KTYQ');
+            } else {
+                const airport = urlParams.get('a').toUpperCase();
+                if (airport == null || airport == '') {
+                    self.airport('KTYQ');
+                } else {
+                    self.airport(airport);
+                }
+            }
 
             if (self.rawObservations().length === 0) {
                 let values = await self.load();
