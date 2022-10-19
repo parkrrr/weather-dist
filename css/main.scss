@@ -24,6 +24,10 @@ body {
   text-align: center;
 }
 
+ul {
+  padding-left: 0;
+}
+
 .view {
   cursor: pointer;
   border-radius: 5px;
@@ -32,6 +36,14 @@ body {
   color: #2de2e6;
   font-weight: 500;
   padding: 5px;
+  list-style-type: none;
+  display: inline-block;
+  margin: 1px;
+}
+
+.active {
+  background-color: #ff6c11;
+  color: #0d0221;
 }
 
 .loader {

@@ -16,8 +16,11 @@ function ViewModel() {
     self.rawObservations = ko.observableArray([]);
     self.observations = ko.observableArray([]);
 
-    self.setView = async function (data, event, view) {
-        switch (view) {
+    self.setView = async function (data, event) {
+        var element = event.target;
+        var viewValue = element.getAttribute('value');
+
+        switch (viewValue) {
             case VIEWS.Pressure:
                 self.view(pressureView);
                 break;

@@ -27,10 +27,12 @@
     <div class="chart ct-minor-second"></div>
 
     <div class="view-container">
-        <span class="view" data-bind="click: function(data, event) { setView(data, event, views.Temperature) }">Temperature</span>
-        <span class="view" data-bind="click: function(data, event) { setView(data, event, views.Dewpoint) }">Dew Point</span>
-        <span class="view" data-bind="click: function(data, event) { setView(data, event, views.Humidity) }">Humidity</span>
-        <span class="view" data-bind="click: function(data, event) { setView(data, event, views.Pressure) }">Pressure</span>
+        <ul>
+            <li class="view" value="Temperature" data-bind="click: setView, css: view().name == 'Temperature' ? 'active': ''">Temperature</span>
+            <li class="view" value="Dew Point" data-bind="click: setView, css: view().name == 'Dew Point' ? 'active': ''">Dew Point</span>
+            <li class="view" value="Humidity" data-bind="click: setView, css: view().name == 'Humidity' ? 'active': ''">Humidity</span>
+            <li class="view" value="Pressure" data-bind="click: setView, css: view().name == 'Pressure' ? 'active': ''">Pressure</span>
+        </ul>
     </div>
 
     <script src="js/knockout-3.5.1.js"></script>
