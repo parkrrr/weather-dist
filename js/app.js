@@ -39,23 +39,25 @@ function ViewModel() {
         await self.initialize();
     }
 
-    self.initialize = async function () {
+    self.initialize = async function (reload) {
         try {
             self.loading(true);
 
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams == null || urlParams.size == 0) {
-                self.airport('KTYQ');
-            } else {
-                const airport = urlParams.get('a').toUpperCase();
-                if (airport == null || airport == '') {
+            if (!reload) {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams == null || urlParams.size == 0) {
                     self.airport('KTYQ');
                 } else {
-                    self.airport(airport);
+                    const airport = urlParams.get('a').toUpperCase();
+                    if (airport == null || airport == '') {
+                        self.airport('KTYQ');
+                    } else {
+                        self.airport(airport);
+                    }
                 }
             }
 
-            if (self.rawObservations().length === 0) {
+            if (self.rawObservations().length === 0 || reload) {
                 let values = await self.load();
                 self.rawObservations(values);
             }
@@ -104,6 +106,12 @@ function ViewModel() {
         return `${model.formatValue()} as of ${relativeDateString}`;
     }
 
+    self.changeAirport = function () {
+        const airport = window.prompt("Enter airport code","KTYQ");
+        self.airport(airport);
+        self.initialize(true);
+    }
+
     self.load = async function () {
         const refDate = new Date();
         refDate.setDate(refDate.getDate() - 3);
@@ -139,7 +147,7 @@ function ViewModel() {
         new Chartist.Line('.chart', {
             series: [
                 {
-                    name: 'series-1',
+                    name: 'observations',
                     data: self.observations().map(o => o.toDataPoint())
                 }
             ]

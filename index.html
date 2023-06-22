@@ -21,7 +21,7 @@
 </head>
 <body>
     <h2 class="title" data-bind="hidden: loading, text: title()"></h2>
-    <h2 class="subtitle" data-bind="hidden: loading, text: subtitle()"></h2>
+    <h2 class="subtitle" data-bind="hidden: loading, text: subtitle(), click: changeAirport"></h2>
     <div data-bind="visible: loading" class="loader"></div>
 
     <div class="chart ct-minor-second"></div>
