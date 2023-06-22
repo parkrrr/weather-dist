@@ -14,6 +14,8 @@ function ViewModel() {
     self.title = ko.observable();
     self.subtitle = ko.observable();
 
+    self.error = ko.observable();
+
     self.rawObservations = ko.observableArray([]);
     self.observations = ko.observableArray([]);
 
@@ -62,6 +64,11 @@ function ViewModel() {
                 self.rawObservations(values);
             }
 
+            if (self.rawObservations().length === 0) {
+                self.error(`No observations from ${self.airport()}`);
+                return;
+            }
+
             self.observations(self.view().parseValues(self.rawObservations()));
 
             let latestObservation = self.observations()[0];
@@ -108,6 +115,10 @@ function ViewModel() {
 
     self.changeAirport = function () {
         const airport = window.prompt("Enter airport code","KTYQ");
+        if (!airport) {
+            return;
+        }
+        
         self.airport(airport);
         self.initialize(true);
     }

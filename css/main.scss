@@ -56,6 +56,12 @@ ul {
   background: url('../img/loading.png') 50% 50% no-repeat $background-color;
 }
 
+.error {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Use this selector to override the line style on a given series */
 .ct-series-a .ct-line {
   stroke: #ff6c11;

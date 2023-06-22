@@ -24,9 +24,14 @@
     <h2 class="subtitle" data-bind="hidden: loading, text: subtitle(), click: changeAirport"></h2>
     <div data-bind="visible: loading" class="loader"></div>
 
-    <div class="chart ct-minor-second"></div>
+    <div class="chart ct-minor-second" data-bind="hidden: error()""></div>
+"
+    <div data-bind="hidden: !error()">
+        <img class="error" src="img/error.png" />
+        <h2 class="title" data-bind="text: error()"></h2>
+    </div>
 
-    <div class="view-container">
+    <div class="view-container" data-bind="hidden: error()">
         <ul>
             <li class="view" value="Temperature" data-bind="click: setView, css: view().name == 'Temperature' ? 'active': ''">Temperature</span>
             <li class="view" value="Dew Point" data-bind="click: setView, css: view().name == 'Dew Point' ? 'active': ''">Dew Point</span>
