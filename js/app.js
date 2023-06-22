@@ -44,6 +44,7 @@ function ViewModel() {
     self.initialize = async function (reload) {
         try {
             self.loading(true);
+            self.error(null)
 
             if (!reload) {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -114,7 +115,7 @@ function ViewModel() {
     }
 
     self.changeAirport = function () {
-        const airport = window.prompt("Enter airport code","KTYQ");
+        const airport = window.prompt("Enter airport code");
         if (!airport) {
             return;
         }
