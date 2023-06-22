@@ -44,7 +44,7 @@ function ViewModel() {
             self.loading(true);
 
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams == null || urlParams.entries.length == 0) {
+            if (urlParams == null || urlParams.size == 0) {
                 self.airport('KTYQ');
             } else {
                 const airport = urlParams.get('a').toUpperCase();
