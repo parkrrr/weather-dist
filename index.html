@@ -1,42 +1,22 @@
-<!doctype html>
-<html class="no-js" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#261447">
 
-<head>
-    <meta charset="utf-8">
-    <title></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet"> 
 
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet"> 
-    <link rel="stylesheet" href="css/main.css">
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-
-    <meta name="theme-color" content="#261447">
-</head>
-<body>
-    <h2 class="title" data-bind="hidden: loading, text: title()"></h2>
-    <h2 class="subtitle" data-bind="hidden: loading, text: subtitle()"></h2>
-    <div data-bind="visible: loading" class="loader"></div>
-
-    <div class="chart ct-minor-second"></div>
-
-    <div class="view-container">
-        <span class="view" data-bind="click: function(data, event) { setView(data, event, views.Temperature) }">Temperature</span>
-        <span class="view" data-bind="click: function(data, event) { setView(data, event, views.Dewpoint) }">Dew Point</span>
-        <span class="view" data-bind="click: function(data, event) { setView(data, event, views.Humidity) }">Humidity</span>
-        <span class="view" data-bind="click: function(data, event) { setView(data, event, views.Pressure) }">Pressure</span>
-    </div>
-
-    <script src="js/knockout-3.5.1.js"></script>
-    <script src="js/chartist.min.js"></script>
-    <script src="js/app.js"></script>
-
-</body>
-
+		<title>Weather</title>
+	</head>
+	<body>
+		<div id="app"></div>
+		<script type="module" src="/src/index.tsx"></script>
+	</body>
 </html>

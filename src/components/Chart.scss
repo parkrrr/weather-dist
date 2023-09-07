@@ -1,0 +1,35 @@
+@use "sass:math";
+@import "../style.scss";
+
+// Text styles for labels
+$ct-text-color: rgba(45, 226, 230, 1) !default;
+$ct-text-size: 1rem !default;
+
+// Grid styles
+$ct-grid-color: rgba(45, 226, 230, 0.2) !default;
+
+// Import all the defaults
+@import "../../node_modules/chartist/dist/index.scss";
+
+// Override remaining styles
+.ct-series-a .ct-line {
+	stroke: #ff6c11;
+}
+
+.ct-series-a .ct-point {
+	stroke: #ff6c11;
+}
+
+svg.ct-chart-bar,
+svg.ct-chart-line {
+	overflow: visible;
+}
+
+.ct-label.ct-label.ct-horizontal.ct-end {
+	position: relative;
+	justify-content: flex-end;
+	text-align: right;
+	transform-origin: 100% 0;
+	transform: translate(-100%) rotate(-45deg);
+	white-space: nowrap;
+}
