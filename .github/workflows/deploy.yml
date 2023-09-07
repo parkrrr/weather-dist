@@ -36,7 +36,7 @@ jobs:
         uses: actions/setup-node@v3
 
       - name: Install production dependencies
-        run: npm install --omit=dev
+        run: npm install
 
       - name: Copy production files
         run: npm run build
