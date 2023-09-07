@@ -1,0 +1,14 @@
+@import "../style.scss";
+
+.error {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	background: url('../assets/error.png') 50% 50% no-repeat $background-color;
+}
+
+.errorMessage {
+	text-align: center;
+	color: #ff6c11;
+	font-weight: 700;
+}

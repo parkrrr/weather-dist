@@ -1,26 +1,23 @@
 {
-  "name": "ui",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "dependencies": {
-    "chartist": "^0.11.4",
-    "knockout": "^3.5.1"
-  },
-  "devDependencies": {
-    "del": "^6.0.0",
-    "gulp": "^4.0.2",
-    "gulp-if": "^3.0.0",
-    "gulp-sass": "^5.1.0",
-    "html-webpack-plugin": "^5.3.1",
-    "sass": "^1.49.7",
-    "webpack": "^5.21.2",
-    "webpack-stream": "^7.0.0",
-    "yargs": "^17.3.1"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC"
+	"name": "weather",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"generate": "npx -y swagger-typescript-api --no-client -p https://api.weather.gov/openapi.json -o ./src/spec -n weather-gov-api.ts"
+	},
+	"dependencies": {
+		"chartist": "^1.3.0",
+		"preact": "^10.13.1"
+	},
+	"devDependencies": {
+		"@preact/preset-vite": "^2.5.0",
+		"eslint": "^8.48.0",
+		"eslint-config-preact": "^1.3.0",
+		"sass": "^1.66.1",
+		"typescript": "^5.2.2",
+		"vite": "^4.3.2"
+	}
 }
