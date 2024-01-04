@@ -3,7 +3,7 @@ import { ObservationViewModel } from "../model/Model"
 export function Header(props: { latestObservation: ObservationViewModel, now: Date }) {
     var n = Math.floor(props.now.getTime() / 1000);
     var t = new Date(props.latestObservation.timestamp).getTime() / 1000;
-    const dateDiff = n - t;
+    const dateDiff = t - n;
 
     var second = 1,
         minute = second * 60,
@@ -18,11 +18,11 @@ export function Header(props: { latestObservation: ObservationViewModel, now: Da
         numeric: "auto",
     });
 
-    if (absDateDiff > day) {
+    if (absDateDiff >= day) {
         relativeDateString = rtf.format(Math.floor(dateDiff / day), 'day');
-    } else if (absDateDiff > hour) {
+    } else if (absDateDiff >= hour) {
         relativeDateString = rtf.format(Math.floor(dateDiff / hour), 'hour');
-    } else if (absDateDiff > minute) {
+    } else if (absDateDiff >= minute) {
         relativeDateString = rtf.format(Math.floor(dateDiff / minute), 'minute');
     } else {
         relativeDateString = rtf.format(Math.floor(dateDiff / second), 'second');
