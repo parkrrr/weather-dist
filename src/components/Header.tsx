@@ -1,15 +1,10 @@
 import { ObservationViewModel } from "../model/Model"
-import style from './Header.module.css';
 
 export function Header(props: { latestObservation: ObservationViewModel, now: Date }) {
-    const rtf = new Intl.RelativeTimeFormat("en", {
-        localeMatcher: "best fit",
-        numeric: "auto",
-    });
-
     var n = Math.floor(props.now.getTime() / 1000);
+    var t = new Date(props.latestObservation.timestamp).getTime() / 1000;
+    const dateDiff = n - t;
 
-    const dateDiff = (new Date(props.latestObservation.timestamp).getTime() - n) / 1000;
     var second = 1,
         minute = second * 60,
         hour = minute * 60,
@@ -17,6 +12,11 @@ export function Header(props: { latestObservation: ObservationViewModel, now: Da
 
     let relativeDateString = '';
     const absDateDiff = Math.abs(dateDiff);
+
+    const rtf = new Intl.RelativeTimeFormat("en", {
+        localeMatcher: "best fit",
+        numeric: "auto",
+    });
 
     if (absDateDiff > day) {
         relativeDateString = rtf.format(Math.floor(dateDiff / day), 'day');
@@ -28,5 +28,5 @@ export function Header(props: { latestObservation: ObservationViewModel, now: Da
         relativeDateString = rtf.format(Math.floor(dateDiff / second), 'second');
     }
 
-    return (<h2 className={style.title}>{props.latestObservation.formatValue()} as of {relativeDateString}</h2>);
+    return (<h2 class="title">{props.latestObservation.formatValue()} as of {relativeDateString}</h2>);
 }
