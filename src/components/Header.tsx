@@ -1,13 +1,15 @@
 import { ObservationViewModel } from "../model/Model"
 import style from './Header.module.css';
 
-export function Header(props: { latestObservation: ObservationViewModel }) {
+export function Header(props: { latestObservation: ObservationViewModel, now: Date }) {
     const rtf = new Intl.RelativeTimeFormat("en", {
         localeMatcher: "best fit",
         numeric: "auto",
     });
 
-    const dateDiff = (new Date(props.latestObservation.timestamp).getTime() - Date.now()) / 1000;
+    var n = Math.floor(props.now.getTime() / 1000);
+
+    const dateDiff = (new Date(props.latestObservation.timestamp).getTime() - n) / 1000;
     var second = 1,
         minute = second * 60,
         hour = minute * 60,
