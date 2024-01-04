@@ -11,12 +11,12 @@ import { Error } from './components/Error';
 import './style.scss';
 
 export function App() {
-	const [airport, setAirport] = useState<string>(null);
+	const [airport, setAirport] = useState<string | null>(null);
 	const [observations, setObservations] = useState<Observation[]>([]);
 	const [viewModels, setViewModels] = useState<ObservationViewModel[]>([]);
 	const [view, setView] = useState<View>(pressureView);
 	const [loading, setLoading] = useState<boolean>(true);
-	const [errorMessage, setErrorMessage] = useState<string>(null);
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	if (airport == null && window.location.search != '') {
 		const params = new URLSearchParams(window.location.search);
@@ -99,7 +99,7 @@ export function App() {
 	return (loading ? <Loading /> :
 		errorMessage ? <Error message={errorMessage} onAirportChange={(a) => changeAirport(a)} /> :
 			<>
-				<Header latestObservation={viewModels[0]} />
+				<Header latestObservation={viewModels[0]} now={new Date()} />
 				<Subheader latestObservation={viewModels[0]} airport={airport} onAirportChange={(a) => changeAirport(a)} />
 				<Chart view={view} observations={viewModels} />
 				<Navigation onChange={(v) => setView(v)} />
