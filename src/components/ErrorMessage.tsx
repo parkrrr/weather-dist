@@ -1,4 +1,4 @@
-export function Error(props: { message: string, onAirportChange: (airport: string) => void }) {
+export function ErrorMessage(props: { message: string, onAirportChange: (airport: string) => void }) {
     return (
         <div>
             <div class="error" />

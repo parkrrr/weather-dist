@@ -4,10 +4,10 @@ import { Chart } from './components/Chart';
 import { Navigation } from './components/Navigation';
 import { useEffect, useState } from 'preact/hooks';
 import { View, pressureView } from './model/View';
-import { Observation, ObservationStationCollectionGeoJson } from './spec/weather-gov-api';
+import { Observation, ObservationStationCollectionGeoJson, ProblemDetail } from './spec/weather-gov-api';
 import { ObservationViewModel } from './model/Model';
 import { Loading } from './components/Loading';
-import { Error } from './components/Error';
+import { ErrorMessage } from './components/ErrorMessage';
 import './style.scss';
 
 export function App() {
@@ -39,8 +39,9 @@ export function App() {
 		const refDate = new Date();
 		refDate.setDate(refDate.getDate() - 3);
 		const startDate = refDate.toISOString();
+		const endDate = new Date().toISOString();
 
-		const request = new Request(`https://api.weather.gov/stations/${airport}/observations?limit=25&start=${startDate}`, {
+		const request = new Request(`https://api.weather.gov/stations/${airport}/observations?start=${startDate}&end=${endDate}`, {
 			method: 'GET',
 			headers: new Headers({
 				'Accept': 'application/geo+json',
@@ -48,8 +49,23 @@ export function App() {
 			}),
 		});
 
+		type ExtendedProblemDetail = ProblemDetail & { parameterErrors?: { message: string, parameter: string }[] };
+
 		fetch(request)
-			.then(resp => resp.json())
+			.then(async (resp: Response) => {
+				if (resp.status >= 400 && resp.status < 600) {
+					const error = await resp.json() as ExtendedProblemDetail;
+console.log(error);
+					if (error.parameterErrors) {
+						const parameterErrorString = error.parameterErrors.map(pd => pd.message).join(', ')
+						throw Error(parameterErrorString);
+					} 
+
+					throw Error(error.detail);
+				}
+
+				return resp.json();
+			})
 			.then((data: ObservationStationCollectionGeoJson) => {
 				const obs: Observation[] = data.features.map(((feat: { properties: Observation; }) => feat.properties));
 
@@ -72,7 +88,7 @@ export function App() {
 
 				setObservations(obs);
 			})
-			.catch((err) => setErrorMessage(err.message))
+			.catch((err: Error) => setErrorMessage(err.message))
 			.finally(() => setLoading(false));
 	}, [airport]);
 
@@ -97,7 +113,7 @@ export function App() {
 	}
 
 	return (loading ? <Loading /> :
-		errorMessage ? <Error message={errorMessage} onAirportChange={(a) => changeAirport(a)} /> :
+		errorMessage ? <ErrorMessage message={errorMessage} onAirportChange={(a) => changeAirport(a)} /> :
 			<>
 				<Header latestObservation={viewModels[0]} now={new Date()} />
 				<Subheader latestObservation={viewModels[0]} airport={airport} onAirportChange={(a) => changeAirport(a)} />
