@@ -12,7 +12,7 @@ class View {
         this.nullCheck = nullCheck;
         this.viewModelFactory = viewModelFactory;
     }
-    referenceValue(): number { return null; }
+    referenceValue(): number | null { return null; }
     labelInterpolationFunc(v: number): string { return v.toFixed(0); }
     parseValues(values: Observation[]): ObservationViewModel[] {
         var parsedValues: ObservationViewModel[] = [];
