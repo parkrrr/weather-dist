@@ -31,7 +31,8 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
             },
             lineSmooth: Interpolation.cardinal({
                 fillHoles: true,
-            })
+            }),
+            showPoint: false
         });
     }, [props.view, props.observations]);
 

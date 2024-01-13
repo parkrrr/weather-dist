@@ -96,7 +96,15 @@ export function App() {
 			return;
 		}
 
-		setViewModels(view.parseValues(observations));
+		// get an evenly distributed subset from array
+		const subsetSize = 50;
+		const subset: Observation[] = [];
+		const interval = observations.length / subsetSize;
+		for (let i = 0; i < subsetSize; i++) {
+			subset.push(observations[Math.floor(i * interval)]);
+		}
+
+		setViewModels(view.parseValues(subset));
 	}, [view, observations]);
 
 	const changeAirport = (airportCode: string) => {
