@@ -13,7 +13,7 @@ export abstract class ObservationViewModel {
 
     toDataPoint() { return {
         x: new Date(this.timestamp),
-        y: this.value.toFixed(0)
+        y: this.value.toFixed(1)
     } };
 
     parseValues(v: any[]) { return [...v]; }
