@@ -1,6 +1,6 @@
 import style from './ErrorMessage.module.scss'
 
-export function ErrorMessage(props: { message: string, onAirportChange: (airport: string) => void }) {
+export function ErrorMessage(props: { message: string, onAirportChange: (airport: string | null) => void }) {
     return (
         <div>
             <div className={style.error} />

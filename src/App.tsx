@@ -107,7 +107,11 @@ export function App() {
 		setViewModels(view.parseValues(subset));
 	}, [view, observations]);
 
-	const changeAirport = (airportCode: string) => {
+	const changeAirport = (airportCode: string | null) => {
+		if (!airportCode) { 
+			return;
+		}
+
 		// update the airport and push the new param to url
 		const normalizedAirportCode = airportCode.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
 		setAirport(normalizedAirportCode);
@@ -119,13 +123,20 @@ export function App() {
 		history.pushState(null, '', newRelativePathQuery);
 	}
 
-	return (loading ? <Loading /> :
-		errorMessage ? <ErrorMessage message={errorMessage} onAirportChange={(a) => changeAirport(a)} /> :
+	if (loading) {
+		return <Loading />
+	} else if (errorMessage) {
+		return <ErrorMessage message={errorMessage} onAirportChange={(a) => changeAirport(a)} />
+	} else if (airport == null) {
+		return <ErrorMessage message="No airport selected" onAirportChange={(a) => changeAirport(a)} />
+	} else {
+		return (
 			<>
 				<Header latestObservation={viewModels[0]} now={new Date()} />
 				<Subheader latestObservation={viewModels[0]} airport={airport} onAirportChange={(a) => changeAirport(a)} />
 				<Chart view={view} observations={viewModels} />
 				<Navigation onChange={(v) => setView(v)} />
 			</>
-	);
+		);
+	}
 }

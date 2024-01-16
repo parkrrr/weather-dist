@@ -26,7 +26,7 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
                 }
             },
             axisY: {
-                referenceValue: props.view.referenceValue(),
+                referenceValue: props.view.referenceValue() ?? undefined,
                 labelInterpolationFnc: props.view.labelInterpolationFunc
             },
             lineSmooth: Interpolation.cardinal({
