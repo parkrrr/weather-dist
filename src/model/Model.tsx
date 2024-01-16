@@ -11,10 +11,12 @@ export abstract class ObservationViewModel {
 
     abstract formatValue(): string;
 
-    toDataPoint() { return {
-        x: new Date(this.timestamp),
-        y: this.value.toFixed(1)
-    } };
+    toDataPoint() {
+        return {
+            x: new Date(this.timestamp),
+            y: this.value.toFixed(1)
+        }
+    };
 
     parseValues(v: any[]) { return [...v]; }
     readableTimeStamp = () => new Date(this.timestamp).toLocaleString(navigator.language, { timeZoneName: 'short' });

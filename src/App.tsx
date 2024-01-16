@@ -58,7 +58,7 @@ export function App() {
 					if (error.parameterErrors) {
 						const parameterErrorString = error.parameterErrors.map(pd => pd.message).join(', ')
 						throw Error(parameterErrorString);
-					} 
+					}
 
 					throw Error(error.detail);
 				}
@@ -108,7 +108,7 @@ export function App() {
 	}, [view, observations]);
 
 	const changeAirport = (airportCode: string | null) => {
-		if (!airportCode) { 
+		if (!airportCode) {
 			return;
 		}
 
