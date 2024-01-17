@@ -1,3 +1,5 @@
+@import "../style.scss";
+
 .view-container {
     margin-top: 50px;
     text-align: center;
@@ -10,9 +12,9 @@ ul {
 .view {
     cursor: pointer;
     border-radius: 5px;
-    background-color: #0d0221;
+    background-color: $background-dark;
     text-align: center;
-    color: #2de2e6;
+    color: $secondary;
     font-weight: 500;
     padding: 5px;
     list-style-type: none;
@@ -21,6 +23,6 @@ ul {
 }
 
 .active {
-    background-color: #ff6c11;
-    color: #0d0221;
+    background-color: $primary;
+    color: $background-dark;
 }

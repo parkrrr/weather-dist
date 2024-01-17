@@ -13,11 +13,11 @@ $ct-grid-color: rgba(45, 226, 230, 0.2) !default;
 
 // Override remaining styles
 .ct-series-a .ct-line {
-	stroke: #ff6c11;
+	stroke: $primary;
 }
 
 .ct-series-a .ct-point {
-	stroke: #ff6c11;
+	stroke: $primary;
 }
 
 svg.ct-chart-bar,

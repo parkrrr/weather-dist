@@ -1,6 +1,8 @@
+@import "../style.scss";
+
 .subtitle {
 	font-size: 1.2rem;
 	text-align: center;
-	color: #2de2e6;
+	color: $secondary;
 	font-weight: 500;
   }

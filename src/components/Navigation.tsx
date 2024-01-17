@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
 import { View, dewpointView, humidityView, pressureView, temperatureView } from "../model/View";
-import style from './Navigation.module.css';
+import style from './Navigation.module.scss';
 
 export function Navigation(props: { onChange: (view: View) => void }) {
     const [activeView, setActiveView] = useState(pressureView);
