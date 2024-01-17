@@ -14,4 +14,5 @@ Locations are referenced by airports. To change the airport, click the ICAO code
 This application uses data provided by the [National Weather Service](https://www.weather.gov/documentation/services-web-api). There is no server-side component, all data is fetched from the browser.
 
 ## Preview
-![image](https://github.com/parkrrr/weather/assets/393737/34914231-88ba-43f7-99da-2b71fe2782ee)
+![image](https://github.com/parkrrr/weather/assets/393737/673567db-7f57-4866-b156-a61c0cea7926)
+
