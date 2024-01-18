@@ -1,5 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 import { ObservationViewModel } from "../model/Model"
+import style from './Header.module.scss'
 
 export function Header(props: { latestObservation: ObservationViewModel, now: Date }) {
     const getRelativeDateString = () => {
@@ -46,5 +47,5 @@ export function Header(props: { latestObservation: ObservationViewModel, now: Da
         };
     }, []);
 
-    return (<h2 class="title">{props.latestObservation.formatValue()} as of {relativeDateString}</h2>);
+    return (<h2 className={style.title}>{props.latestObservation.formatValue()} as of {relativeDateString}</h2>);
 }
