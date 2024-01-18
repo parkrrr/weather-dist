@@ -1,4 +1,4 @@
-name: Build
+name: Test
 
 on:
   workflow_dispatch:
@@ -16,23 +16,26 @@ on:
       - 'LICENSE'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  test:
+    name: Test
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    
+    runs-on: ${{ matrix.os }}
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+    - name: Install dependencies
+      run: npm install
 
-      - name: Setup Environment
-        uses: actions/setup-node@v4
+    - name: Install browsers
+      run: npx playwright install
 
-      - name: Install dependencies
-        run: npm install
+    - name: Build
+      run: npm run build
 
-      - name: Build
-        run: npm run build
-
-      - name: Test
-        run: npm run test
+    - name: Test
+      run: npm run test
