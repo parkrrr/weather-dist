@@ -31,14 +31,14 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Build
+      run: npm run build
+
     - name: Install Playwright dependencies
       run: npx playwright install-deps
 
     - name: Install browsers
       run: npx playwright install
-
-    - name: Build
-      run: npm run build
 
     - name: Test
       run: npm run test
