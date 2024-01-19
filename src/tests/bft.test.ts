@@ -33,7 +33,7 @@ test('Render Chart', async ({ page, browserName  }) => {
   expect(dataPointCount).toBeGreaterThanOrEqual(20);
   
   await page.screenshot({
-    path: `./screenshots/${browserName}.png`,
+    path: `./screenshots/'
     fullPage: true
   });
 });
