@@ -10,7 +10,7 @@ test('Render Header', async ({ page }) => {
   await expect(page.getByText(subheaderRegex)).toBeVisible();
 });
 
-test('Render Chart', async ({ page }) => {
+test('Render Chart', async ({ page, browserName  }) => {
   await page.goto('http://127.0.0.1:3000/weather');
 
   // this test verifies that the chart is showing *something*
@@ -31,8 +31,11 @@ test('Render Chart', async ({ page }) => {
   const dataPointCount = dataPoints?.split(',').length;
 
   expect(dataPointCount).toBeGreaterThanOrEqual(20);
-
-  await page.screenshot({ path: 'screenshot.png' });
+  
+  await page.screenshot({
+    path: `./screenshots/${browserName}.png`,
+    fullPage: true
+  });
 });
 
 test('Render Navigation', async ({ page }) => {
