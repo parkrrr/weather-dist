@@ -1,0 +1,52 @@
+name: Test
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+
+jobs:
+  test:
+    name: Test   
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build
+      run: npm run build
+
+    - name: Install Playwright dependencies
+      run: npx playwright install-deps
+
+    - name: Install browsers
+      run: npx playwright install
+
+    - name: Test
+      run: npm run test
+
+    - name: Upload screenshots
+      uses: actions/upload-artifact@v4
+      id: artifact-upload-step
+      with:
+        name: screenshots
+        path: screenshots/
+
+    - name: Output artifact URL
+      run:  echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
+
