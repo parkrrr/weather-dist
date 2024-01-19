@@ -45,7 +45,7 @@ jobs:
       id: artifact-upload-step
       with:
         name: screenshots
-        path: screenshots/chromium.png
+        path: screenshots/
 
     - name: Output artifact URL
       run:  echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
