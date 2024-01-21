@@ -51,4 +51,18 @@ const dewpointView = new View("Dew Point", null,
     (v) => new TemperatureModel(v.timestamp!, v.dewpoint!.value!),
     (v) => v.toFixed(1));
 
-export { View, pressureView, temperatureView, humidityView, dewpointView };
+const getViewByName = (name: string | null): View | null => {
+    if (name == null) {
+        return null;
+    }
+
+    const view = views.find(v => v.name == name);
+    if (view == undefined) {
+        return null;
+    }
+
+    return view;
+}
+
+const views = [temperatureView, dewpointView, humidityView, pressureView];
+export { View, views, getViewByName };

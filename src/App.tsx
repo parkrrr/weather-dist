@@ -3,7 +3,7 @@ import { Subheader } from './components/Subheader';
 import { Chart } from './components/Chart';
 import { Navigation } from './components/Navigation';
 import { useEffect, useState } from 'preact/hooks';
-import { View, pressureView } from './model/View';
+import { View, getViewByName, views } from './model/View';
 import { Observation, ObservationStationCollectionGeoJson, ProblemDetail } from './spec/weather-gov-api';
 import { ObservationViewModel } from './model/Model';
 import { Loading } from './components/Loading';
@@ -14,7 +14,7 @@ export function App() {
 	const [airport, setAirport] = useState<string | null>(null);
 	const [observations, setObservations] = useState<Observation[]>([]);
 	const [viewModels, setViewModels] = useState<ObservationViewModel[]>([]);
-	const [view, setView] = useState<View>(pressureView);
+	const [view, setView] = useState<View | null>(getViewByName(localStorage.getItem('view') ?? 'Pressure'));
 	const [loading, setLoading] = useState<boolean>(true);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -92,7 +92,7 @@ export function App() {
 	}, [airport]);
 
 	useEffect(() => {
-		if (observations == null || observations.length == 0) {
+		if (view == null || observations == null || observations.length == 0) {
 			return;
 		}
 
@@ -106,6 +106,11 @@ export function App() {
 
 		setViewModels(view.parseValues(subset));
 	}, [view, observations]);
+
+	useEffect(() => {
+		if (view != null)
+			localStorage.setItem('view', view.name);
+	}, [view])
 
 	const changeAirport = (airportCode: string | null) => {
 		if (!airportCode) {
@@ -129,13 +134,15 @@ export function App() {
 		return <ErrorMessage message={errorMessage} onAirportChange={(a) => changeAirport(a)} />
 	} else if (airport == null) {
 		return <ErrorMessage message="No airport selected" onAirportChange={(a) => changeAirport(a)} />
+	} else if (view == null) {
+		return <ErrorMessage message="Invalid view selected" onAirportChange={(a) => changeAirport(a)} />
 	} else {
 		return (
 			<>
 				<Header latestObservation={viewModels[0]} now={new Date()} />
 				<Subheader latestObservation={viewModels[0]} airport={airport} onAirportChange={(a) => changeAirport(a)} />
 				<Chart view={view} observations={viewModels} />
-				<Navigation onChange={(v) => setView(v)} />
+				<Navigation initialView={view} onChange={(v) => setView(v)} />
 			</>
 		);
 	}
