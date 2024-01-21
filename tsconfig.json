@@ -10,5 +10,6 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "preact"
 	},
-	"include": ["node_modules/vite/client.d.ts", "**/*"]
+	"include": ["node_modules/vite/client.d.ts", "**/*"],
+	"exclude": ["dist"]
 }
