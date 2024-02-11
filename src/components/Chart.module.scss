@@ -1,0 +1,22 @@
+@use "sass:math";
+@import "../style.scss";
+
+// Text styles for labels
+$ct-text-color: rgba(45, 226, 230, 1) !default;
+$ct-text-size: 1rem !default;
+
+// Grid styles
+$ct-grid-color: rgba(45, 226, 230, 0.2) !default;
+
+// Override remaining styles
+.line {
+	stroke: $primary;
+}
+
+.point {
+	stroke: $primary;
+}
+
+#chart {
+	height: 70vh;
+}
