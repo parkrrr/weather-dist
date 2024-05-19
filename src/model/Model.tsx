@@ -11,10 +11,14 @@ export abstract class ObservationViewModel {
 
     abstract formatValue(): string;
 
+    formatDataPoint(v: number) {
+        return v.toFixed(1);
+    }
+
     toDataPoint() {
         return {
             x: new Date(this.timestamp),
-            y: this.value.toFixed(1)
+            y: this.formatDataPoint(this.value)
         }
     };
 
@@ -32,11 +36,8 @@ export class PressureModel extends ObservationViewModel {
         return `${this.value.toFixed(2)} inHg`;
     }
 
-    toDataPoint() {
-        return {
-            x: new Date(this.timestamp),
-            y: this.value.toFixed(2)
-        }
+    formatDataPoint(v: number) {
+        return v.toFixed(2);
     }
 }
 
