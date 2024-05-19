@@ -10,13 +10,13 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
 
   const pathCommands = props.observations.map((o, i) => {
     const x = i / (props.observations.length - 1);
-    const y =  (o.value - minimum) / (maximum - minimum);
+    const y =  1 - (o.value - minimum) / (maximum - minimum);
     return `${i === 0 ? 'M' : 'L'} ${x * 100} ${y * 100}`;
   }).join(' ');
 
   const points = props.observations.map((o, i) => {
     const x = i / (props.observations.length - 1);
-    const y =  (o.value - minimum) / (maximum - minimum);
+    const y = 1 - (o.value - minimum) / (maximum - minimum);
     return { x: x * 100, y: y * 100 };
   });
 
