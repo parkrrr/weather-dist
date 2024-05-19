@@ -2,7 +2,8 @@
     "name": "Weather",
     "short_name": "Wxr",
     "orientation": "portrait-primary",
-    "start_url": "/weather",
+    "scope": "https://parkrrr.github.io/weather/",
+    "start_url": "https://parkrrr.github.io/weather/",
     "icons": [
         {
             "src": "android-chrome-192x192.png",
