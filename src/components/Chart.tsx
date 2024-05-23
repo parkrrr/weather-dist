@@ -1,34 +1,22 @@
-import { skipPartiallyEmittedExpressions } from 'typescript';
 import { ObservationViewModel } from '../model/Model';
 import { View } from '../model/View';
 import style from './Chart.module.scss'
 
 export function Chart(props: { view: View, observations: ObservationViewModel[] }) {
+  const labelOffset = 15;
 
-  const labelOffset = 10;
+  const minimumValue = Math.min(...props.observations.map(o => o.value));
+  const maximumValue = Math.max(...props.observations.map(o => o.value));
+  const minimumTimestamp = Math.min(...props.observations.map(o => o.timestamp.getTime()));
+  const maximumTimestamp = Math.max(...props.observations.map(o => o.timestamp.getTime()));
 
-  const minimum = Math.min(...props.observations.map(o => o.value));
-  const maximum = Math.max(...props.observations.map(o => o.value));
+  function getRange(minimum: number, maximum: number, count: number) {
+    const spacing = (maximum - minimum) / (count - 1);
+    return Array.from({ length: count }, (_, i) => spacing * i + minimum);
+  }
 
-  const format = props.observations[0].formatDataPoint;
-
-  console.info("min", minimum, "max", maximum);
-
-  // const pathCommands = props.observations.map((o, i) => {
-  //   const x = i / (props.observations.length - 1);
-  //   const y =  1 - (o.value - minimum) / (maximum - minimum);
-  //   return `${i === 0 ? 'M' : 'L'} ${(x * 100) + leftOffset} ${y * 100}`;
-  // }).join(' ');
-
-  // const points = props.observations.map((o, i) => {
-  //   const x = i / (props.observations.length - 1);
-  //   const y = (1 - (o.value - minimum) / (maximum - minimum));
-  //   return { x: ((x * 100) - (leftOffset / props.observations.length)), y: y * 100 };
-  // });
-
-  // generate 10 numbers in between `minimum` and `maximum`
-  const spacing = (maximum - minimum) / 10;
-  const gridLinesRange = Array.from({ length: 10 }, (_, i) => { return spacing * i + minimum; });
+  const gridLinesRange = getRange(minimumValue, maximumValue, 10);
+  const dateLinesRange = getRange(minimumTimestamp, maximumTimestamp, 10).map(o => new Date(o));
 
   const verticalGridLines = gridLinesRange.map((o, i) => {
     const x = ((i / 9) * (100 - labelOffset)) + labelOffset;
@@ -40,28 +28,49 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
     return { x1: 0 + labelOffset, y1: y, x2: 100, y2: y };
   });
 
-  const yAxisLabels = gridLinesRange.sort((a,b) => b-a).map((o, i) => {
-    const y = ((i / 9) * 100) ;
+  const yAxisLabels = gridLinesRange.sort((a, b) => b - a).map((o, i) => {
+    const y = ((i / 9) * 100);
     return y;
   });
 
-  const xAxisLabels = gridLinesRange.sort((a,b) => b-a).map((o, i) => {
-    const x = ((i / 9) *  (100 )) ;
+  const xAxisLabels = dateLinesRange.sort((a, b) => a.getTime() - b.getTime()).map((o, i) => {
+    const x = ((i / 9) * (100 - labelOffset)) + labelOffset;
     return x;
   });
 
+  const points = props.observations.map(o => {
+    const x = ((o.timestamp.getTime() - minimumTimestamp) / (maximumTimestamp - minimumTimestamp)) * (100 - labelOffset) + labelOffset;
+    const y = 100 - ((o.value - minimumValue) / (maximumValue - minimumValue)) * 100;
+    return { x, y };
+  });
+
+  const pathCommands = `M ${points[0].x} ${points[0].y} ${points.map(p => `L ${p.x} ${p.y}`).join(' ')}`;
+
+  const valueFormatter = props.observations[0].formatDataPoint;
+  const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
   return (
-    <svg id="chart" viewBox="-5 -5 110 110" xmlns="http://www.w3.org/2000/svg">
+    <svg id="chart" viewBox="-5 -5 110 130" xmlns="http://www.w3.org/2000/svg">
       <g>
         {verticalGridLines.map(p => <line className={style.gridline} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke-dasharray="1 1" />)}
         {horizontalGridLines.map(p => <line className={style.gridline} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke-dasharray="1 1" />)}
-        {yAxisLabels.map((y,i) => <text x={0} y={y} className={style['label-y']}>{format(gridLinesRange[i])}</text>)}
-        {xAxisLabels.map((x,i) => <text x={x} y={105} className={style['label-x']}>{format(gridLinesRange[i])}</text>)}
       </g>
-      {/* <g className={style.point}>
+      <g>
+        {yAxisLabels.map((y, i) => <text x={0} y={y} className={style['label-y']}>{valueFormatter(gridLinesRange[i])}</text>)}
+        {xAxisLabels.map((x, i) =>
+          <foreignObject x={x} y={105} style="overflow: visible;">
+            <span className={style['label-x']}>{dateFormatter.format(dateLinesRange[i])}</span>
+          </foreignObject>
+        )}
+      </g>
+      <g className={style.point}>
         {points.map(p => <circle cx={p.x} cy={p.y} r="0.5" />)}
+        <path className={style.fill} d={pathCommands} fill="transparent" stroke-width="1" fill-opacity="0.5" />
       </g>
-      <path className={style.line} d={pathCommands} fill="transparent" stroke-width="1" fill-opacity="0.5" /> */}
     </svg>
   );
 

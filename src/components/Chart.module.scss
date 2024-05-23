@@ -16,21 +16,21 @@
 }
 
 .label-y {
+	display: flex;
 	fill: $secondary;
     color: $secondary;
-    font-size: 0.2rem;
+    font-size: 0.25rem;
     line-height: 1;
 }
 
 .label-x {
+	display: flex;
 	fill: $secondary;
     color: $secondary;
-    font-size: 0.2rem;
-    line-height: 1;
-	
-
-}
-
-#chart {
-	height: 70vh;
+    font-size: 0.25rem;
+	position: relative;
+    justify-content: flex-end;
+    transform-origin: 100% 0;
+	transform: translate(-100%) rotate(-45deg);
+    white-space: nowrap;
 }
