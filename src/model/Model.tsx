@@ -3,10 +3,10 @@ export function celciusToFahrenheit(c: number) { return (c * 1.8) + 32; }
 
 export abstract class ObservationViewModel {
     value: number;
-    timestamp: string;
+    timestamp: Date;
 
     constructor(timestamp: string) {
-        this.timestamp = timestamp;
+        this.timestamp = new Date(timestamp);
     }
 
     abstract formatValue(): string;
@@ -17,13 +17,13 @@ export abstract class ObservationViewModel {
 
     toDataPoint() {
         return {
-            x: new Date(this.timestamp),
+            x: this.timestamp,
             y: this.formatDataPoint(this.value)
         }
     };
 
     parseValues(v: any[]) { return [...v]; }
-    readableTimeStamp = () => new Date(this.timestamp).toLocaleString(navigator.language, { timeZoneName: 'short' });
+    readableTimeStamp = () => this.timestamp.toLocaleString(navigator.language, { timeZoneName: 'short' });
 }
 
 export class PressureModel extends ObservationViewModel {
