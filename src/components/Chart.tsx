@@ -54,7 +54,7 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
   });
 
   return (
-    <svg id="chart" viewBox="0 -5 102 125" xmlns="http://www.w3.org/2000/svg">
+    <svg id="chart" className={style.chart} viewBox="0 -5 102 125" xmlns="http://www.w3.org/2000/svg">
       <g id="gridlines">
         {verticalGridLines.map(p => <line className={style.gridline} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke-dasharray="1 1" />)}
         {horizontalGridLines.map(p => <line className={style.gridline} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke-dasharray="1 1" />)}
