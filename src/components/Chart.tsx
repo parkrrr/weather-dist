@@ -55,11 +55,11 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
 
   return (
     <svg id="chart" viewBox="0 -5 102 125" xmlns="http://www.w3.org/2000/svg">
-      <g>
+      <g id="gridlines">
         {verticalGridLines.map(p => <line className={style.gridline} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke-dasharray="1 1" />)}
         {horizontalGridLines.map(p => <line className={style.gridline} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke-dasharray="1 1" />)}
       </g>
-      <g>
+      <g id="labels">
         {yAxisLabels.map((y, i) => <text x={0} y={y} className={style['label-y']}>{valueFormatter(gridLinesRange[i])}</text>)}
         {xAxisLabels.map((x, i) =>
           <foreignObject x={x-1} y={101} style="overflow: visible;">
@@ -67,7 +67,7 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
           </foreignObject>
         )}
       </g>
-      <g className={style.line}>
+      <g id="datapoints" className={style.line}>
         {points.map(p => <circle cx={p.x} cy={p.y} r="0.5" />)}
         <path d={pathCommands} fill="transparent" stroke-width="1" fill-opacity="0.5" />
       </g>
