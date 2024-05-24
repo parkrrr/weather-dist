@@ -17,18 +17,18 @@ test('Render Chart', async ({ page, browserName }) => {
   // we are not testing that it is displaying accurately
 
   // is the chart div even visible?
-  await expect(page.locator('#chart svg')).toBeVisible();
+  await expect(page.locator('svg')).toBeVisible();
 
   // does the chart have grid lines?
-  const gridLineCount = await page.locator('g.ct-grids line').count();
+  const gridLineCount = await page.locator('#gridlines line').count();
   expect(gridLineCount).toBeGreaterThanOrEqual(15);
 
   // does it have labels?
-  const labelCount = await page.locator('g.ct-labels foreignObject span').count();
+  const labelCount = await page.locator('#labels foreignObject span').count();
   expect(labelCount).toBeGreaterThanOrEqual(10);
 
-  const dataPoints = await page.locator('g.ct-series.ct-series-a path.ct-line').getAttribute('d');
-  const dataPointCount = dataPoints?.split(',').length;
+  const dataPoints = await page.locator('#datapoints path').getAttribute('d');
+  const dataPointCount = dataPoints?.split('L').length;
 
   expect(dataPointCount).toBeGreaterThanOrEqual(20);
 
