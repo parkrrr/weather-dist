@@ -1,12 +1,7 @@
 @use "sass:math";
 @import "../style.scss";
 
-// Override remaining styles
 .line {
-	stroke: $primary;
-}
-
-.point {
 	stroke: $primary;
 }
 

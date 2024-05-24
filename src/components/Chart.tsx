@@ -67,9 +67,9 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
           </foreignObject>
         )}
       </g>
-      <g className={style.point}>
+      <g className={style.line}>
         {points.map(p => <circle cx={p.x} cy={p.y} r="0.5" />)}
-        <path className={style.fill} d={pathCommands} fill="transparent" stroke-width="1" fill-opacity="0.5" />
+        <path d={pathCommands} fill="transparent" stroke-width="1" fill-opacity="0.5" />
       </g>
     </svg>
   );
