@@ -5,8 +5,15 @@ import style from './Chart.module.scss'
 export function Chart(props: { view: View, observations: ObservationViewModel[] }) {
   const labelOffset = 15;
 
-  const minimumValue = Math.min(...props.observations.map(o => o.value));
-  const maximumValue = Math.max(...props.observations.map(o => o.value));
+  let minimumValue = Math.min(...props.observations.map(o => o.value));
+  let maximumValue = Math.max(...props.observations.map(o => o.value));
+
+  const referenceValue = props.view.referenceValue();
+  if (referenceValue) {
+    minimumValue = Math.min(referenceValue, minimumValue);
+    maximumValue = Math.max(referenceValue, maximumValue);
+  }
+
   const minimumTimestamp = Math.min(...props.observations.map(o => o.timestamp.getTime()));
   const maximumTimestamp = Math.max(...props.observations.map(o => o.timestamp.getTime()));
 
