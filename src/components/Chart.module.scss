@@ -11,6 +11,10 @@
 	stroke: $primary;
 }
 
+.qc-fail {
+	stroke: $secondary-dark;
+}
+
 .gridline {
 	stroke: $secondary-dark;
 	stroke-width: 0.5px;

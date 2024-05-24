@@ -33,22 +33,22 @@ class View {
 
 const pressureView = new View("Pressure", 29.92,
     (v) => v.barometricPressure?.value == null,
-    (v) => new PressureModel(v.timestamp!, v.barometricPressure!.value!),
+    (v) => new PressureModel(v.timestamp!, v.barometricPressure!),
     (v) => v.toFixed(2));
 
 const temperatureView = new View("Temperature", null,
     (v) => v.temperature?.value == null,
-    (v) => new TemperatureModel(v.timestamp!, v.temperature!.value!),
+    (v) => new TemperatureModel(v.timestamp!, v.temperature!),
     (v) => v.toFixed(1));
 
 const humidityView = new View("Humidity", null,
     (v) => v.relativeHumidity?.value == null,
-    (v) => new HumidityModel(v.timestamp!, v.relativeHumidity!.value!),
+    (v) => new HumidityModel(v.timestamp!, v.relativeHumidity!),
     (v) => v.toFixed(1));
 
 const dewpointView = new View("Dew Point", null,
     (v) => v.dewpoint?.value == null,
-    (v) => new TemperatureModel(v.timestamp!, v.dewpoint!.value!),
+    (v) => new TemperatureModel(v.timestamp!, v.dewpoint!),
     (v) => v.toFixed(1));
 
 const getViewByName = (name: string | null): View | null => {

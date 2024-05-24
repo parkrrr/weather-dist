@@ -41,7 +41,8 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
   const points = props.observations.map(o => {
     const x = ((o.timestamp.getTime() - minimumTimestamp) / (maximumTimestamp - minimumTimestamp)) * (100 - labelOffset) + labelOffset;
     const y = 100 - ((o.value - minimumValue) / (maximumValue - minimumValue)) * 100;
-    return { x, y };
+    const qc = o.hasPassedQualityControl;
+    return { x, y, qc };
   });
 
   const pathCommands = `M ${points[0].x} ${points[0].y} ${points.map(p => `L ${p.x} ${p.y}`).join(' ')}`;
@@ -62,14 +63,25 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
       <g id="labels">
         {yAxisLabels.map((y, i) => <text x={0} y={y} className={style['label-y']}>{valueFormatter(gridLinesRange[i])}</text>)}
         {xAxisLabels.map((x, i) =>
-          <foreignObject x={x-1} y={101} style="overflow: visible;">
+          <foreignObject x={x - 1} y={101} style="overflow: visible;">
             <span className={style['label-x']}>{dateFormatter.format(dateLinesRange[i])}</span>
           </foreignObject>
         )}
       </g>
       <g id="datapoints" className={style.line}>
-        {points.map(p => <circle cx={p.x} cy={p.y} r="0.5" />)}
         <path d={pathCommands} fill="transparent" stroke-width="1" fill-opacity="0.5" />
+        {points.map(p => {
+          switch (p.qc) {
+            case true:
+              return <circle cx={p.x} cy={p.y} r="0.5" />
+            case false:
+              return  <circle cx={p.x} cy={p.y} r="0.5" className={style['qc-fail']} />
+            case null:
+            default:
+              return null
+          }
+        })}
+
       </g>
     </svg>
   );

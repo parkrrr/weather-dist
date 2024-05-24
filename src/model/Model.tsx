@@ -1,12 +1,33 @@
+import { QuantitativeValue } from "../spec/weather-gov-api";
+
 export function pascalsToInchesMercury(pascals: number) { return pascals * 0.0002953 };
 export function celciusToFahrenheit(c: number) { return (c * 1.8) + 32; }
+export function parseQualityControl(qualityCode: "Z" | "C" | "S" | "V" | "X" | "Q" | "G" | "B" | "T" | undefined): boolean | null {
+    switch (qualityCode) {
+        case "B":
+        case "Q":
+        case "X":
+            return false;
+        case "C":
+        case "G":
+        case "S":
+        case "T":
+        case "V":
+            return true;
+        case "Z":
+        default:
+            return null;
+    }
+}
 
 export abstract class ObservationViewModel {
     value: number;
     timestamp: Date;
+    hasPassedQualityControl: boolean | null = null;
 
-    constructor(timestamp: string) {
+    constructor(timestamp: string, quantitativeValue: QuantitativeValue) {
         this.timestamp = new Date(timestamp);
+        this.hasPassedQualityControl = parseQualityControl(quantitativeValue.qualityControl);
     }
 
     abstract formatValue(): string;
@@ -27,9 +48,9 @@ export abstract class ObservationViewModel {
 }
 
 export class PressureModel extends ObservationViewModel {
-    constructor(timestamp: string, val: number) {
-        super(timestamp);
-        this.value = pascalsToInchesMercury(val);
+    constructor(timestamp: string, quantitativeValue: QuantitativeValue) {
+        super(timestamp, quantitativeValue);
+        this.value = pascalsToInchesMercury(quantitativeValue.value!);
     }
 
     formatValue() {
@@ -42,9 +63,9 @@ export class PressureModel extends ObservationViewModel {
 }
 
 export class TemperatureModel extends ObservationViewModel {
-    constructor(timestamp: string, val: number) {
-        super(timestamp);
-        this.value = celciusToFahrenheit(val);
+    constructor(timestamp: string, quantitativeValue: QuantitativeValue) {
+        super(timestamp, quantitativeValue);
+        this.value = celciusToFahrenheit(quantitativeValue.value!);
     }
 
     formatValue() {
@@ -53,9 +74,9 @@ export class TemperatureModel extends ObservationViewModel {
 }
 
 export class HumidityModel extends ObservationViewModel {
-    constructor(timestamp: string, val: number) {
-        super(timestamp);
-        this.value = val;
+    constructor(timestamp: string, quantitativeValue: QuantitativeValue) {
+        super(timestamp, quantitativeValue);
+        this.value = quantitativeValue.value!;
     }
 
     formatValue() {
