@@ -39,9 +39,8 @@ export function App() {
 		const refDate = new Date();
 		refDate.setDate(refDate.getDate() - 3);
 		const startDate = refDate.toISOString();
-		const endDate = new Date().toISOString();
 
-		const request = new Request(`https://api.weather.gov/stations/${airport}/observations?start=${startDate}&end=${endDate}`, {
+		const request = new Request(`https://api.weather.gov/stations/${airport}/observations?start=${startDate}`, {
 			method: 'GET',
 			headers: new Headers({
 				'Accept': 'application/geo+json',
@@ -96,15 +95,7 @@ export function App() {
 			return;
 		}
 
-		// get an evenly distributed subset from array
-		const subsetSize = 50;
-		const subset: Observation[] = [];
-		const interval = observations.length / subsetSize;
-		for (let i = 0; i < subsetSize; i++) {
-			subset.push(observations[Math.floor(i * interval)]);
-		}
-
-		setViewModels(view.parseValues(subset));
+		setViewModels(view.parseValues(observations));
 	}, [view, observations]);
 
 	useEffect(() => {

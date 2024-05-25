@@ -4,6 +4,7 @@ import style from './Chart.module.scss'
 
 export function Chart(props: { view: View, observations: ObservationViewModel[] }) {
   const labelOffset = 15;
+  const pointSize = 0.25;
 
   let minimumValue = Math.min(...props.observations.map(o => o.value));
   let maximumValue = Math.max(...props.observations.map(o => o.value));
@@ -80,9 +81,9 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
         {points.map(p => {
           switch (p.qc) {
             case true:
-              return <circle cx={p.x} cy={p.y} r="0.5" />
+              return <circle cx={p.x} cy={p.y} r={pointSize} />
             case false:
-              return  <circle cx={p.x} cy={p.y} r="0.5" className={style['qc-fail']} />
+              return  <circle cx={p.x} cy={p.y} r={pointSize} className={style['qc-fail']} />
             case null:
             default:
               return null
