@@ -13,7 +13,7 @@ import './style.scss';
 export function App() {
 	const [airport, setAirport] = useState<string | null>(null);
 	const [observations, setObservations] = useState<Observation[]>([]);
-	const [viewModels, setViewModels] = useState<ObservationViewModel[]>([]);
+	const [viewModels, setViewModels] = useState<ObservationViewModel<any>[]>([]);
 	const [view, setView] = useState<View | null>(getViewByName(localStorage.getItem('view') ?? 'Pressure'));
 	const [loading, setLoading] = useState<boolean>(true);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);

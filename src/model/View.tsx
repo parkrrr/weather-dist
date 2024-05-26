@@ -1,16 +1,16 @@
 import { Observation } from "../spec/weather-gov-api";
-import { ObservationViewModel, HumidityModel, TemperatureModel } from "./Model";
+import { ObservationViewModel, HumidityModel, TemperatureModel, WindModel } from "./Model";
 import { PressureModel } from "./Model";
 
 class View {
     name: string;
     nullCheck: (a: Observation) => boolean;
-    viewModelFactory: (a: Observation) => ObservationViewModel;
+    viewModelFactory: (a: Observation) => ObservationViewModel<any>;
 
     constructor(viewName: string,
         referenceValue: number | null = null,
         nullCheck: (a: Observation) => boolean,
-        viewModelFactory: (a: Observation) => ObservationViewModel,
+        viewModelFactory: (a: Observation) => ObservationViewModel<any>,
         labelInterpolationFunc: (v: number) => string) {
         this.name = viewName;
         this.nullCheck = nullCheck;
@@ -20,8 +20,8 @@ class View {
     }
     referenceValue(): number | null { return null; }
     labelInterpolationFunc(v: number): string { return v.toFixed(0); }
-    parseValues(values: Observation[]): ObservationViewModel[] {
-        var parsedValues: ObservationViewModel[] = [];
+    parseValues(values: Observation[]): ObservationViewModel<any>[] {
+        var parsedValues: ObservationViewModel<any>[] = [];
         values.forEach(v => {
             if (this.nullCheck(v)) return;
             parsedValues.push(this.viewModelFactory(v));
@@ -51,6 +51,11 @@ const dewpointView = new View("Dew Point", null,
     (v) => new TemperatureModel(v.timestamp!, v.dewpoint!),
     (v) => v.toFixed(1));
 
+const windView = new View("Wind", null,
+    (v) => v.windSpeed?.value == null,
+    (v) => new WindModel(v.timestamp!, v.windSpeed!, v.windDirection!),
+    (v) => v.toFixed(1));
+
 const getViewByName = (name: string | null): View | null => {
     if (name == null) {
         return null;
@@ -64,5 +69,5 @@ const getViewByName = (name: string | null): View | null => {
     return view;
 }
 
-const views = [temperatureView, dewpointView, humidityView, pressureView];
+const views = [temperatureView, dewpointView, humidityView, pressureView, windView];
 export { View, views, getViewByName };

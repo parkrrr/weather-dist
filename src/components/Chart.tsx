@@ -2,12 +2,12 @@ import { ObservationViewModel } from '../model/Model';
 import { View } from '../model/View';
 import style from './Chart.module.scss'
 
-export function Chart(props: { view: View, observations: ObservationViewModel[] }) {
+export function Chart(props: { view: View, observations: ObservationViewModel<any>[] }) {
   const labelOffset = 15;
   const pointSize = 0.25;
 
-  let minimumValue = Math.min(...props.observations.map(o => o.value));
-  let maximumValue = Math.max(...props.observations.map(o => o.value));
+  let minimumValue = Math.min(...props.observations.map(o => o.toDataPoint().y));
+  let maximumValue = Math.max(...props.observations.map(o => o.toDataPoint().y));
 
   const referenceValue = props.view.referenceValue();
   if (referenceValue) {
@@ -15,8 +15,8 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
     maximumValue = Math.max(referenceValue, maximumValue);
   }
 
-  const minimumTimestamp = Math.min(...props.observations.map(o => o.timestamp.getTime()));
-  const maximumTimestamp = Math.max(...props.observations.map(o => o.timestamp.getTime()));
+  const minimumTimestamp = Math.min(...props.observations.map(o => o.toDataPoint().x.getTime()));
+  const maximumTimestamp = Math.max(...props.observations.map(o => o.toDataPoint().x.getTime()));
 
   function getRange(minimum: number, maximum: number, count: number) {
     const spacing = (maximum - minimum) / (count - 1);
@@ -47,20 +47,38 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
   });
 
   const points = props.observations.map(o => {
-    const x = ((o.timestamp.getTime() - minimumTimestamp) / (maximumTimestamp - minimumTimestamp)) * (100 - labelOffset) + labelOffset;
-    const y = 100 - ((o.value - minimumValue) / (maximumValue - minimumValue)) * 100;
+    var point = o.toDataPoint();
+
+    const x = ((point.x.getTime() - minimumTimestamp) / (maximumTimestamp - minimumTimestamp)) * (100 - labelOffset) + labelOffset;
+    const y = 100 - ((point.y - minimumValue) / (maximumValue - minimumValue)) * 100;
     const qc = o.hasPassedQualityControl;
-    return { x, y, qc };
+    const hasAdditionalValue = Object.keys(o.value).length > 1;
+    return { x, y, qc, hasAdditionalValue, value: o.value };
   });
 
   const pathCommands = `M ${points[0].x} ${points[0].y} ${points.map(p => `L ${p.x} ${p.y}`).join(' ')}`;
 
-  const valueFormatter = props.observations[0].formatDataPoint;
+  const valueFormatter = props.view.labelInterpolationFunc;
   const dateFormatter = new Intl.DateTimeFormat('en-GB', {
     weekday: 'short',
     hour: '2-digit',
     minute: '2-digit',
   });
+
+  const rotatePoint = (ref: { x: number, y: number }, point: { x: number, y: number }, degree: number): { x: number, y: number } => {
+    // the wind data indicates where the wind is coming from, but we want to visualize where it's going
+    // so we need to take `degree` and find its opposite
+    const angle = (((degree + 180) % 360) * Math.PI / 180);
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+
+    const rotateX = (x: number, y: number) => ref.x + (x - ref.x) * cos - (y - ref.y) * sin;
+    const rotateY = (x: number, y: number) => ref.y + (x - ref.x) * sin + (y - ref.y) * cos;
+
+    const rotatedPoint = { x: rotateX(point.x, point.y), y: rotateY(point.x, point.y) };
+
+    return rotatedPoint;
+  }
 
   return (
     <svg id="chart" className={style.chart} viewBox="0 -5 102 125" xmlns="http://www.w3.org/2000/svg">
@@ -77,13 +95,35 @@ export function Chart(props: { view: View, observations: ObservationViewModel[] 
         )}
       </g>
       <g id="datapoints" className={style.line}>
-        <path d={pathCommands} fill="transparent" stroke-width="1" fill-opacity="0.5" />
+        <path d={pathCommands} fill="transparent" stroke-width="0.5" fill-opacity="0.5" />
+
+
         {points.map(p => {
+          // for now this indicates we are displaying wind data
+          if (p.hasAdditionalValue) {
+            // Don't render a point if the wind is calm
+            if (p.value[0] == 0 && p.value[1] == 0) {
+              return null;
+            }
+
+            const pointiness = 2;
+            const size = 1.0;
+            const ref = { x: p.x, y: p.y };
+            const p1 = { x: p.x, y: p.y - (pointiness * size) };
+            const p2 = { x: p.x + size, y: p.y + size };
+            const p3 = { x: p.x - size, y: p.y + size };
+
+            const rotatedPoints = [ref, p1, p2, p3, p1].map(r => rotatePoint(ref, r, p.value[1]))
+            const pointCommands = rotatedPoints.map(p => `${p.x} ${p.y}`).join(',');
+
+            return <polygon className={style.windpoint} points={pointCommands} />
+          }
+
           switch (p.qc) {
             case true:
               return <circle cx={p.x} cy={p.y} r={pointSize} />
             case false:
-              return  <circle cx={p.x} cy={p.y} r={pointSize} className={style['qc-fail']} />
+              return <circle cx={p.x} cy={p.y} r={pointSize} className={style['qc-fail']} />
             case null:
             default:
               return null

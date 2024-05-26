@@ -19,9 +19,13 @@ export function parseQualityControl(qualityCode: "Z" | "C" | "S" | "V" | "X" | "
             return null;
     }
 }
+export function degreesToCardinalDirection(degrees: number) {
+    const directions = ["north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest"];
+    return directions[Math.round(degrees / 45) % 8];
+}
 
-export abstract class ObservationViewModel {
-    value: number;
+export abstract class ObservationViewModel<T> {
+    value: T;
     timestamp: Date;
     hasPassedQualityControl: boolean | null = null;
 
@@ -32,14 +36,10 @@ export abstract class ObservationViewModel {
 
     abstract formatValue(): string;
 
-    formatDataPoint(v: number) {
-        return v.toFixed(1);
-    }
-
-    toDataPoint() {
+    toDataPoint(): { x: Date, y: T | number} {
         return {
             x: this.timestamp,
-            y: this.formatDataPoint(this.value)
+            y: this.value
         }
     };
 
@@ -47,7 +47,7 @@ export abstract class ObservationViewModel {
     readableTimeStamp = () => this.timestamp.toLocaleString(navigator.language, { timeZoneName: 'short' });
 }
 
-export class PressureModel extends ObservationViewModel {
+export class PressureModel extends ObservationViewModel<number> {
     constructor(timestamp: string, quantitativeValue: QuantitativeValue) {
         super(timestamp, quantitativeValue);
         this.value = pascalsToInchesMercury(quantitativeValue.value!);
@@ -56,13 +56,9 @@ export class PressureModel extends ObservationViewModel {
     formatValue() {
         return `${this.value.toFixed(2)} inHg`;
     }
-
-    formatDataPoint(v: number) {
-        return v.toFixed(2);
-    }
 }
 
-export class TemperatureModel extends ObservationViewModel {
+export class TemperatureModel extends ObservationViewModel<number> {
     constructor(timestamp: string, quantitativeValue: QuantitativeValue) {
         super(timestamp, quantitativeValue);
         this.value = celciusToFahrenheit(quantitativeValue.value!);
@@ -73,7 +69,7 @@ export class TemperatureModel extends ObservationViewModel {
     }
 }
 
-export class HumidityModel extends ObservationViewModel {
+export class HumidityModel extends ObservationViewModel<number> {
     constructor(timestamp: string, quantitativeValue: QuantitativeValue) {
         super(timestamp, quantitativeValue);
         this.value = quantitativeValue.value!;
@@ -81,5 +77,23 @@ export class HumidityModel extends ObservationViewModel {
 
     formatValue() {
         return `${this.value.toFixed(0)}%`;
+    }
+}
+
+export class WindModel extends ObservationViewModel<[number, number]> {
+    constructor(timestamp: string, windSpeed: QuantitativeValue, windDirection: QuantitativeValue) {
+        super(timestamp, windSpeed);
+        this.value = [windSpeed.value!, windDirection.value!];
+    }
+
+    toDataPoint() {
+        return {
+            x: this.timestamp,
+            y: this.value[0]
+        }
+    };
+
+    formatValue() {
+        return `From the ${degreesToCardinalDirection(this.value[1])} at ${this.value[0].toFixed(0)} MPH`;
     }
 }
