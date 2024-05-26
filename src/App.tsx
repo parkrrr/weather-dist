@@ -141,7 +141,7 @@ export function App() {
 				<Subheader latestObservation={viewModels[0]} airport={airport} onAirportChange={(a) => changeAirport(a)} />
 				<Chart view={view} observations={viewModels} />
 				<Navigation initialView={view} onChange={(v) => setView(v)} />
-				<Scale initialScale={parseInt(scale)} onChange={(s) => setScale(s)} />
+				<Scale initialScale={scale} onChange={(s) => setScale(s)} />
 			</>
 		);
 	}

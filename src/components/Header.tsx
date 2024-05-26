@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { ObservationViewModel } from "../model/Model"
 import style from './Header.module.scss'
 
-export function Header(props: { latestObservation: ObservationViewModel, now: Date }) {
+export function Header(props: { latestObservation: ObservationViewModel<any>, now: Date }) {
     const getRelativeDateString = () => {
         const n = Math.floor(props.now.getTime() / 1000);
         const t = new Date(props.latestObservation.timestamp).getTime() / 1000;
