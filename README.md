@@ -7,8 +7,8 @@ I wrote this to fill a need to quickly view recent historical trends regarding t
 * Winter 2021 - First UI iteration using Knockout.js and Chart.js. Would only display barometric pressure.
 * Summer 2021 - Converted graph to Chartist, added temperature and humidity views.
 * Winter 2022 - Removed jQuery and Moment dependencies, added dewpoint view. Removed server components and query NWS API directly.
-* Fall 2023 - Converted to Preact.
-* Spring 2024 - Chartist dependency removed, now rendering SVG directly.
+* Fall 2023 - Converted to Preact, moved to GitHub Pages
+* Spring 2024 - Chartist dependency removed, now rendering SVG directly. Added wind view and time scale controls.
 
 ## Usage
 Load https://parkrrr.github.io/weather/ into your mobile browser of choice. The design is mobile-first so it may be weird to use on a desktop.
