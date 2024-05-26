@@ -36,7 +36,7 @@ const pressureView = new View("Pressure", 29.92,
     (v) => new PressureModel(v.timestamp!, v.barometricPressure!),
     (v) => v.toFixed(2));
 
-const temperatureView = new View("Temperature", null,
+const temperatureView = new View("Temp", null,
     (v) => v.temperature?.value == null,
     (v) => new TemperatureModel(v.timestamp!, v.temperature!),
     (v) => v.toFixed(1));
