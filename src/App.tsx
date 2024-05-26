@@ -9,12 +9,14 @@ import { ObservationViewModel } from './model/Model';
 import { Loading } from './components/Loading';
 import { ErrorMessage } from './components/ErrorMessage';
 import './style.scss';
+import { Scale } from './components/Scale';
 
 export function App() {
 	const [airport, setAirport] = useState<string | null>(null);
 	const [observations, setObservations] = useState<Observation[]>([]);
 	const [viewModels, setViewModels] = useState<ObservationViewModel<any>[]>([]);
 	const [view, setView] = useState<View | null>(getViewByName(localStorage.getItem('view') ?? 'Pressure'));
+	const [scale, setScale] = useState<string>(localStorage.getItem('scale') ?? '3');
 	const [loading, setLoading] = useState<boolean>(true);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -37,7 +39,7 @@ export function App() {
 		setLoading(true);
 
 		const refDate = new Date();
-		refDate.setDate(refDate.getDate() - 3);
+		refDate.setDate(refDate.getDate() - parseInt(scale));
 		const startDate = refDate.toISOString();
 
 		const request = new Request(`https://api.weather.gov/stations/${airport}/observations?start=${startDate}`, {
@@ -88,7 +90,7 @@ export function App() {
 			})
 			.catch((err: Error) => setErrorMessage(err.message))
 			.finally(() => setLoading(false));
-	}, [airport]);
+	}, [airport, scale]);
 
 	useEffect(() => {
 		if (view == null || observations == null || observations.length == 0) {
@@ -102,6 +104,11 @@ export function App() {
 		if (view != null)
 			localStorage.setItem('view', view.name);
 	}, [view])
+
+	useEffect(() => {
+		if (scale != null)
+			localStorage.setItem('scale', scale.toString());
+	}, [scale])
 
 	const changeAirport = (airportCode: string | null) => {
 		if (!airportCode) {
@@ -134,6 +141,7 @@ export function App() {
 				<Subheader latestObservation={viewModels[0]} airport={airport} onAirportChange={(a) => changeAirport(a)} />
 				<Chart view={view} observations={viewModels} />
 				<Navigation initialView={view} onChange={(v) => setView(v)} />
+				<Scale initialScale={parseInt(scale)} onChange={(s) => setScale(s)} />
 			</>
 		);
 	}
