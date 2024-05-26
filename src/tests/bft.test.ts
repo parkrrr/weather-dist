@@ -40,6 +40,12 @@ test('Render Chart', async ({ page, browserName }) => {
 
 test('Render Navigation', async ({ page }) => {
   await page.goto('http://127.0.0.1:3000/weather');
-  await expect(page.getByRole('listitem')).toHaveCount(4);
-  await expect(page.getByRole('listitem')).toHaveText(['Temperature', 'Dew Point', 'Humidity', 'Pressure']);
+  await expect(page.locator('#navigation li')).toHaveCount(5);
+  await expect(page.locator('#navigation li')).toHaveText(['Temp', 'Dew Point', 'Humidity', 'Pressure', 'Wind']);
+});
+
+test('Render Scale', async ({ page }) => {
+  await page.goto('http://127.0.0.1:3000/weather');
+  await expect(page.locator('#scale li')).toHaveCount(3);
+  await expect(page.locator('#scale li')).toHaveText(['1 day', '3 day', '5 day']);
 });

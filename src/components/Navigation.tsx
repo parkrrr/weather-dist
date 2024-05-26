@@ -16,7 +16,7 @@ export function Navigation(props: { initialView: View, onChange: (view: View) =>
 
     return (
         <div className={style['view-container']}>
-            <ul>
+            <ul id="navigation">
                 {navItems}
             </ul>
         </div>
