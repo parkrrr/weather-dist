@@ -9,7 +9,7 @@
 		"test": "playwright test"
 	},
 	"dependencies": {
-		"preact": "^10.19.3",
+		"preact": "^10.22.0",
 		"sass": "^1.70.0",
 		"typescript": "^5.4.5",
 		"vite": "^5.2.10"
