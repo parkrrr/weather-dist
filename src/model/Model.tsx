@@ -24,6 +24,9 @@ export function degreesToCardinalDirection(degrees: number) {
     return directions[Math.round(degrees / 45) % 8];
 }
 
+// All possible types that a view model might take
+export type ViewModelGenericTypes = number | [number, number];
+
 export abstract class ObservationViewModel<T> {
     value: T;
     timestamp: Date;
@@ -36,14 +39,12 @@ export abstract class ObservationViewModel<T> {
 
     abstract formatValue(): string;
 
-    toDataPoint(): { x: Date, y: T | number } {
+    toDataPoint(): { x: Date, y: number } {
         return {
             x: this.timestamp,
-            y: this.value
+            y: this.value as number
         }
     };
-
-    parseValues(v: any[]) { return [...v]; }
 }
 
 export class PressureModel extends ObservationViewModel<number> {

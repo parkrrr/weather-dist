@@ -1,8 +1,10 @@
-import { ObservationViewModel } from '../model/Model';
+/* eslint-disable react/no-unknown-property */
+import { ObservationViewModel, ViewModelGenericTypes } from '../model/Model';
 import { View } from '../model/View';
 import style from './Chart.module.scss'
+import React from 'preact/compat';
 
-export function Chart(props: { view: View, observations: ObservationViewModel<any>[] }) {
+export function Chart(props: { view: View, observations: ObservationViewModel<ViewModelGenericTypes>[] }) {
   const labelOffset = 15;
   const pointSize = 0.25;
   const gridLineCount = 10;
@@ -52,7 +54,7 @@ export function Chart(props: { view: View, observations: ObservationViewModel<an
   });
 
   const points = props.observations.map(o => {
-    var point = o.toDataPoint();
+    const point = o.toDataPoint();
 
     const x = ((point.x.getTime() - minimumTimestamp) / (maximumTimestamp - minimumTimestamp)) * (100 - labelOffset) + labelOffset;
     const y = 100 - ((point.y - minimumValue) / (maximumValue - minimumValue)) * 100;
@@ -91,13 +93,13 @@ export function Chart(props: { view: View, observations: ObservationViewModel<an
   return (
     <svg id="chart" className={style.chart} viewBox="0 -5 105 130" xmlns="http://www.w3.org/2000/svg">
       <g id="gridlines">
-        {verticalGridLines.map(p => <line className={style.gridline} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke-dasharray="1 1" />)}
-        {horizontalGridLines.map(p => <line className={style.gridline} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke-dasharray="1 1" />)}
+        {verticalGridLines.map((p,i) => <line key={i} className={style.gridline} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke-dasharray="1 1" />)}
+        {horizontalGridLines.map((p,i) => <line key={i} className={style.gridline} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke-dasharray="1 1" />)}
       </g>
       <g id="labels">
-        {yAxisLabels.map((y, i) => <text x={0} y={y} className={style['label-y']}>{valueFormatter(gridLinesRange[i])}</text>)}
+        {yAxisLabels.map((y, i) => <text key={i} x={0} y={y} className={style['label-y']}>{valueFormatter(gridLinesRange[i])}</text>)}
         {xAxisLabels.map((x, i) =>
-          <foreignObject x={x - 1} y={101} style="overflow: visible;">
+          <foreignObject key={i} x={x - 1} y={101} style="overflow: visible;">
             <span className={style['label-x']}>{dateFormatter.format(dateLinesRange[i])}</span>
           </foreignObject>
         )}
@@ -106,7 +108,7 @@ export function Chart(props: { view: View, observations: ObservationViewModel<an
         <path d={pathCommands} fill="transparent" stroke-width="0.5" fill-opacity="0.5" />
 
 
-        {points.map(p => {
+        {points.map((p,i) => {
           // for now this indicates we are displaying wind data
           if (p.hasAdditionalValue) {
             // Don't render a point if the wind is calm
@@ -122,7 +124,7 @@ export function Chart(props: { view: View, observations: ObservationViewModel<an
             const rotatedPoints = [ref, p1, p2, p3, p1].map(r => rotatePoint(ref, r, p.value[1]))
             const pointCommands = rotatedPoints.map(p => `${p.x} ${p.y}`).join(',');
 
-            return <polygon className={style.windpoint} points={pointCommands} />
+            return <polygon key={i} className={style.windpoint} points={pointCommands} />
           }
 
           switch (p.qc) {

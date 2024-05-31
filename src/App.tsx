@@ -1,11 +1,12 @@
+import React from 'preact/compat';
 import { Header } from './components/Header';
 import { Subheader } from './components/Subheader';
 import { Chart } from './components/Chart';
 import { Navigation } from './components/Navigation';
 import { useEffect, useState } from 'preact/hooks';
-import { View, getViewByName, views } from './model/View';
+import { View, getViewByName } from './model/View';
 import { Observation, ObservationStationCollectionGeoJson, ProblemDetail } from './spec/weather-gov-api';
-import { ObservationViewModel } from './model/Model';
+import { ObservationViewModel, ViewModelGenericTypes } from './model/Model';
 import { Loading } from './components/Loading';
 import { ErrorMessage } from './components/ErrorMessage';
 import './style.scss';
@@ -14,7 +15,7 @@ import { Scale } from './components/Scale';
 export function App() {
 	const [airport, setAirport] = useState<string | null>(null);
 	const [observations, setObservations] = useState<Observation[]>([]);
-	const [viewModels, setViewModels] = useState<ObservationViewModel<any>[]>([]);
+	const [viewModels, setViewModels] = useState<ObservationViewModel<ViewModelGenericTypes>[]>([]);
 	const [view, setView] = useState<View | null>(getViewByName(localStorage.getItem('view') ?? 'Pressure'));
 	const [scale, setScale] = useState<string>(localStorage.getItem('scale') ?? '3');
 	const [loading, setLoading] = useState<boolean>(true);
@@ -97,7 +98,7 @@ export function App() {
 			return;
 		}
 
-		var viewModels = observations.filter(o => view.nullCheck(o) == false).map(o => view.viewModelFactory(o));
+		const viewModels = observations.filter(o => view.nullCheck(o) == false).map(o => view.viewModelFactory(o));
 		setViewModels(viewModels);
 	}, [view, observations]);
 
@@ -121,9 +122,9 @@ export function App() {
 		setAirport(normalizedAirportCode);
 		setErrorMessage(null);
 
-		var searchParams = new URLSearchParams(window.location.search)
+		const searchParams = new URLSearchParams(window.location.search)
 		searchParams.set("airport", normalizedAirportCode);
-		var newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
+		const newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
 		history.pushState(null, '', newRelativePathQuery);
 	}
 

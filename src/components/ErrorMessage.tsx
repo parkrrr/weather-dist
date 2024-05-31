@@ -1,3 +1,4 @@
+import React from 'preact/compat';
 import style from './ErrorMessage.module.scss'
 
 export function ErrorMessage(props: { message: string, onAirportChange: (airport: string | null) => void }) {

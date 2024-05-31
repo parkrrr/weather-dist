@@ -1,7 +1,8 @@
-import { ObservationViewModel } from "../model/Model";
+import React from 'preact/compat';
+import { ObservationViewModel, ViewModelGenericTypes } from "../model/Model";
 import style from './Subheader.module.scss';
 
-export function Subheader(props: { airport: string, latestObservation: ObservationViewModel<any>, onAirportChange: (airport: string | null) => void }) {
+export function Subheader(props: { airport: string, latestObservation: ObservationViewModel<ViewModelGenericTypes>, onAirportChange: (airport: string | null) => void }) {
     const dateFormatOptions: Intl.DateTimeFormatOptions  = { 
         month: 'numeric',
         day: 'numeric',

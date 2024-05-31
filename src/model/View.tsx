@@ -1,5 +1,5 @@
 import { Observation } from "../spec/weather-gov-api";
-import { ObservationViewModel, HumidityModel, TemperatureModel, WindModel } from "./Model";
+import { ObservationViewModel, HumidityModel, TemperatureModel, WindModel, ViewModelGenericTypes } from "./Model";
 import { PressureModel } from "./Model";
 
 class View {
@@ -10,17 +10,17 @@ class View {
     nullCheck: (a: Observation) => boolean;
 
     // how to convert from an Observation to an ObservationViewModel
-    viewModelFactory: (a: Observation) => ObservationViewModel<any>;
+    viewModelFactory: (a: Observation) => ObservationViewModel<ViewModelGenericTypes>;
 
     constructor(viewName: string,
         referenceValue: number | null = null,
         nullCheck: (a: Observation) => boolean,
-        viewModelFactory: (a: Observation) => ObservationViewModel<any>,
-        labelInterpolationFunc: (v: number) => string) {
+        viewModelFactory: (a: Observation) => ObservationViewModel<ViewModelGenericTypes>,
+        valueAxisFormatter: (v: number) => string) {
         this.name = viewName;
         this.nullCheck = nullCheck;
         this.viewModelFactory = viewModelFactory;
-        this.valueAxisFormatter = labelInterpolationFunc;
+        this.valueAxisFormatter = valueAxisFormatter;
         this.referenceValue = () => referenceValue;
     }
 

@@ -1,3 +1,4 @@
+import React from 'preact/compat';
 import { useState } from "preact/hooks";
 import { View, views } from "../model/View";
 import style from './Navigation.module.scss';
@@ -10,8 +11,8 @@ export function Navigation(props: { initialView: View, onChange: (view: View) =>
         props.onChange(view);
     }
 
-    const navItems = views.map((view) => {
-        return (<li value={view.name} className={`${style.view} ${activeView == view ? style.active : ''}`} onClick={() => setView(view)}>{view.name}</li>);
+    const navItems = views.map((view, i) => {
+        return (<li key={i} value={view.name} className={`${style.view} ${activeView == view ? style.active : ''}`} onClick={() => setView(view)}>{view.name}</li>);
     });
 
     return (
