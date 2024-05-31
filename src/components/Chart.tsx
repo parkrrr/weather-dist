@@ -5,6 +5,7 @@ import style from './Chart.module.scss'
 export function Chart(props: { view: View, observations: ObservationViewModel<any>[] }) {
   const labelOffset = 15;
   const pointSize = 0.25;
+  const gridLineCount = 10;
 
   let minimumValue = Math.min(...props.observations.map(o => o.toDataPoint().y));
   let maximumValue = Math.max(...props.observations.map(o => o.toDataPoint().y));
@@ -23,26 +24,26 @@ export function Chart(props: { view: View, observations: ObservationViewModel<an
     return Array.from({ length: count }, (_, i) => spacing * i + minimum);
   }
 
-  const gridLinesRange = getRange(minimumValue, maximumValue, 10);
-  const dateLinesRange = getRange(minimumTimestamp, maximumTimestamp, 10).map(o => new Date(o));
+  const gridLinesRange = getRange(minimumValue, maximumValue, gridLineCount);
+  const dateLinesRange = getRange(minimumTimestamp, maximumTimestamp, gridLineCount).map(o => new Date(o));
 
   const verticalGridLines = gridLinesRange.map((o, i) => {
-    const x = ((i / 9) * (100 - labelOffset)) + labelOffset;
+    const x = ((i / (gridLineCount - 1)) * (100 - labelOffset)) + labelOffset;
     return { x1: x, y1: 0, x2: x, y2: 100 };
   });
 
   const horizontalGridLines = gridLinesRange.map((o, i) => {
-    const y = ((i / 9) * 100);
+    const y = ((i / (gridLineCount - 1)) * 100);
     return { x1: 0 + labelOffset, y1: y, x2: 100, y2: y };
   });
 
   const yAxisLabels = gridLinesRange.sort((a, b) => b - a).map((o, i) => {
-    const y = ((i / 9) * 100);
+    const y = ((i / (gridLineCount - 1)) * 100);
     return y;
   });
 
   const xAxisLabels = dateLinesRange.sort((a, b) => a.getTime() - b.getTime()).map((o, i) => {
-    const x = ((i / 9) * (100 - labelOffset)) + labelOffset;
+    const x = ((i / (gridLineCount - 1)) * (100 - labelOffset)) + labelOffset;
     return x;
   });
 
@@ -65,6 +66,8 @@ export function Chart(props: { view: View, observations: ObservationViewModel<an
     minute: '2-digit',
   });
 
+  // rotate a triangle around a point
+  // it's easier to translate the svg points than deal with the rotate transform
   const rotatePoint = (ref: { x: number, y: number }, point: { x: number, y: number }, degree: number): { x: number, y: number } => {
     // the wind data indicates where the wind is coming from, but we want to visualize where it's going
     // so we need to take `degree` and find its opposite
