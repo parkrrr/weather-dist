@@ -3,15 +3,6 @@ import { ObservationViewModel, HumidityModel, TemperatureModel, WindModel, ViewM
 import { PressureModel } from "./Model";
 
 class View {
-    // name of the view. this is displayed in the navigation buttons
-    name: string;
-
-    // a function to use as a null check, since it's different for each observation
-    nullCheck: (a: Observation) => boolean;
-
-    // how to convert from an Observation to an ObservationViewModel
-    viewModelFactory: (a: Observation) => ObservationViewModel<ViewModelGenericTypes>;
-
     constructor(viewName: string,
         referenceValue: number | null = null,
         nullCheck: (a: Observation) => boolean,
@@ -23,6 +14,15 @@ class View {
         this.valueAxisFormatter = valueAxisFormatter;
         this.referenceValue = () => referenceValue;
     }
+
+    // name of the view. this is displayed in the navigation buttons
+    name: string;
+
+    // a function to use as a null check, since it's different for each observation
+    nullCheck: (a: Observation) => boolean;
+
+    // how to convert from an Observation to an ObservationViewModel
+    viewModelFactory: (a: Observation) => ObservationViewModel<ViewModelGenericTypes>;
 
     // optional. if supplied, the graph will always display this value on the y-axis
     referenceValue(): number | null { return null; }

@@ -18,12 +18,12 @@ Locations are referenced by airports. To change the airport, click the ICAO code
 Observations that have failed quality control will be rendered with a darker point. Initial observations that have not undergone quality control will not render a point, but will still have a connecting line.
 
 ## Data
-This application uses data provided by the [National Weather Service](https://www.weather.gov/documentation/services-web-api).
+This application uses data provided by the [National Weather Service](https://www.weather.gov/documentation/services-web-api). As a result, data is limited to North American airports.
 
 The types for the NWS API can be re-generated using `npm run generate`.
 
 ## Tests
-There is a growing suite of tests. The site must be built before testing: `npm run build` then `npm test`.
+There is a growing suite of tests, utilizing Playwright. The site must be built before testing: `npm run build` then `npm test`.
 
 ## Preview
 ![image](https://github.com/parkrrr/weather/assets/393737/ba5500f8-2c8c-4512-bea5-2d39d1adcca0)
