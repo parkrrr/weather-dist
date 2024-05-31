@@ -6,7 +6,7 @@ test('Render Header', async ({ page }) => {
   const headerRegex = new RegExp(/(\d+\.?\d*\s?[a-zA-Z%°]*\sas\sof\s\d*\s?[a-zA-Z]*)/);
   await expect(page.getByText(headerRegex)).toBeVisible();
 
-  const subheaderRegex = new RegExp(/^([A-Za-z]{4})\sat\s(\d{1,2}\/\d{1,2}\/\d{4},\s\d{1,2}:\d{2}:\d{2}\s[A|P][M]\s[A-Za-z]{3})$/);
+  const subheaderRegex = new RegExp(/^([A-Za-z]{4})\sat\s(\d{1,2}\/\d{1,2}\/\d{4},\s([01]\d|2[0-3]):\d{2}\s[A-Za-z]{3})$/);
   await expect(page.getByText(subheaderRegex)).toBeVisible();
 });
 
