@@ -58,7 +58,7 @@ export function Chart(props: { view: View, observations: ObservationViewModel<an
 
   const pathCommands = `M ${points[0].x} ${points[0].y} ${points.map(p => `L ${p.x} ${p.y}`).join(' ')}`;
 
-  const valueFormatter = props.view.labelInterpolationFunc;
+  const valueFormatter = props.view.valueAxisFormatter;
   const dateFormatter = new Intl.DateTimeFormat('en-GB', {
     weekday: 'short',
     hour: '2-digit',

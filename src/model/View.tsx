@@ -15,11 +15,11 @@ class View {
         this.name = viewName;
         this.nullCheck = nullCheck;
         this.viewModelFactory = viewModelFactory;
-        this.labelInterpolationFunc = labelInterpolationFunc;
+        this.valueAxisFormatter = labelInterpolationFunc;
         this.referenceValue = () => referenceValue;
     }
     referenceValue(): number | null { return null; }
-    labelInterpolationFunc(v: number): string { return v.toFixed(0); }
+    valueAxisFormatter(v: number): string { return v.toFixed(0); }
 }
 
 const pressureView = new View("Pressure", 29.92,
