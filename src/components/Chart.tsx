@@ -64,10 +64,11 @@ export function Chart(props: { view: View, observations: ObservationViewModel<an
   const pathCommands = `M ${points[0].x} ${points[0].y} ${points.map(p => `L ${p.x} ${p.y}`).join(' ')}`;
 
   const valueFormatter = props.view.valueAxisFormatter;
-  const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+  const dateFormatter = new Intl.DateTimeFormat(navigator.language, {
     weekday: 'short',
     hour: '2-digit',
     minute: '2-digit',
+    hour12: false
   });
 
   // rotate a triangle around a point
@@ -88,7 +89,7 @@ export function Chart(props: { view: View, observations: ObservationViewModel<an
   }
 
   return (
-    <svg id="chart" className={style.chart} viewBox="0 -5 102 125" xmlns="http://www.w3.org/2000/svg">
+    <svg id="chart" className={style.chart} viewBox="0 -5 105 130" xmlns="http://www.w3.org/2000/svg">
       <g id="gridlines">
         {verticalGridLines.map(p => <line className={style.gridline} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke-dasharray="1 1" />)}
         {horizontalGridLines.map(p => <line className={style.gridline} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke-dasharray="1 1" />)}

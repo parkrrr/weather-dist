@@ -7,7 +7,8 @@ export function Subheader(props: { airport: string, latestObservation: Observati
         day: 'numeric',
         year: 'numeric',
         hour: 'numeric', 
-        minute: '2-digit', 
+        minute: '2-digit',
+        hour12: false,
         timeZoneName: 'short'
     };
 
