@@ -49,3 +49,8 @@ test('Render Scale', async ({ page }) => {
   await expect(page.locator('#scale li')).toHaveCount(3);
   await expect(page.locator('#scale li')).toHaveText(['1 day', '3 day', '5 day']);
 });
+
+test('Invalid station shows error message', async ({ page }) => {
+  await page.goto('http://127.0.0.1:3000/weather?airport=XYYZ');
+  await expect(page.locator('h2')).toHaveText('No observations from XYYZ');
+});
