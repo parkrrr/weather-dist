@@ -94,6 +94,10 @@ export class WindModel extends ObservationViewModel<[number, number]> {
     };
 
     formatValue() {
+        if (this.value[1] == 0 && this.value[0] == 0) {
+            return `Calm`;
+        }
+        
         return `From the ${degreesToCardinalDirection(this.value[1])} at ${this.value[0].toFixed(0)} MPH`;
     }
 }
