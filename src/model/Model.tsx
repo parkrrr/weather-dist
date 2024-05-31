@@ -44,7 +44,6 @@ export abstract class ObservationViewModel<T> {
     };
 
     parseValues(v: any[]) { return [...v]; }
-    readableTimeStamp = () => this.timestamp.toLocaleString(navigator.language, { timeZoneName: 'short' });
 }
 
 export class PressureModel extends ObservationViewModel<number> {
