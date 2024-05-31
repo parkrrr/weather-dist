@@ -26,7 +26,7 @@ class View {
 
     // optional. if supplied, the graph will always display this value on the y-axis
     referenceValue(): number | null { return null; }
-    
+
     // how to format the y-axis labels
     valueAxisFormatter(v: number): string { return v.toFixed(0); }
 }

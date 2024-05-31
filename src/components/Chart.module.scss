@@ -28,19 +28,19 @@
 .label-y {
 	display: flex;
 	fill: $secondary;
-    color: $secondary;
-    font-size: 0.3rem;
-    line-height: 1;
+	color: $secondary;
+	font-size: 0.3rem;
+	line-height: 1;
 }
 
 .label-x {
 	display: flex;
 	fill: $secondary;
-    color: $secondary;
-    font-size: 0.3rem;
+	color: $secondary;
+	font-size: 0.3rem;
 	position: relative;
-    justify-content: flex-end;
-    transform-origin: 100% 0;
+	justify-content: flex-end;
+	transform-origin: 100% 0;
 	transform: translate(-100%) rotate(-45deg);
-    white-space: nowrap;
+	white-space: nowrap;
 }

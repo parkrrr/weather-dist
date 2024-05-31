@@ -36,7 +36,7 @@ export abstract class ObservationViewModel<T> {
 
     abstract formatValue(): string;
 
-    toDataPoint(): { x: Date, y: T | number} {
+    toDataPoint(): { x: Date, y: T | number } {
         return {
             x: this.timestamp,
             y: this.value
@@ -97,7 +97,7 @@ export class WindModel extends ObservationViewModel<[number, number]> {
         if (this.value[1] == 0 && this.value[0] == 0) {
             return `Calm`;
         }
-        
+
         return `From the ${degreesToCardinalDirection(this.value[1])} at ${this.value[0].toFixed(0)} MPH`;
     }
 }
