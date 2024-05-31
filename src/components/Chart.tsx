@@ -6,6 +6,10 @@ export function Chart(props: { view: View, observations: ObservationViewModel<an
   const labelOffset = 15;
   const pointSize = 0.25;
   const gridLineCount = 10;
+  
+  // wind-specific
+  const trianglePointiness = 2;
+  const triangleSize = 1.0;
 
   let minimumValue = Math.min(...props.observations.map(o => o.toDataPoint().y));
   let maximumValue = Math.max(...props.observations.map(o => o.toDataPoint().y));
@@ -109,12 +113,10 @@ export function Chart(props: { view: View, observations: ObservationViewModel<an
               return null;
             }
 
-            const pointiness = 2;
-            const size = 1.0;
             const ref = { x: p.x, y: p.y };
-            const p1 = { x: p.x, y: p.y - (pointiness * size) };
-            const p2 = { x: p.x + size, y: p.y + size };
-            const p3 = { x: p.x - size, y: p.y + size };
+            const p1 = { x: p.x, y: p.y - (trianglePointiness * triangleSize) };
+            const p2 = { x: p.x + triangleSize, y: p.y + triangleSize };
+            const p3 = { x: p.x - triangleSize, y: p.y + triangleSize };
 
             const rotatedPoints = [ref, p1, p2, p3, p1].map(r => rotatePoint(ref, r, p.value[1]))
             const pointCommands = rotatedPoints.map(p => `${p.x} ${p.y}`).join(',');
