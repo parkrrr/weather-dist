@@ -20,15 +20,6 @@ class View {
     }
     referenceValue(): number | null { return null; }
     labelInterpolationFunc(v: number): string { return v.toFixed(0); }
-    parseValues(values: Observation[]): ObservationViewModel<any>[] {
-        var parsedValues: ObservationViewModel<any>[] = [];
-        values.forEach(v => {
-            if (this.nullCheck(v)) return;
-            parsedValues.push(this.viewModelFactory(v));
-        });
-
-        return parsedValues;
-    }
 }
 
 const pressureView = new View("Pressure", 29.92,

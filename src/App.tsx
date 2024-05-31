@@ -97,7 +97,8 @@ export function App() {
 			return;
 		}
 
-		setViewModels(view.parseValues(observations));
+		var viewModels = observations.filter(o => view.nullCheck(o) == false).map(o => view.viewModelFactory(o));
+		setViewModels(viewModels);
 	}, [view, observations]);
 
 	useEffect(() => {
