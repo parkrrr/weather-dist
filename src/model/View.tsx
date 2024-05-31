@@ -3,8 +3,13 @@ import { ObservationViewModel, HumidityModel, TemperatureModel, WindModel } from
 import { PressureModel } from "./Model";
 
 class View {
+    // name of the view. this is displayed in the navigation buttons
     name: string;
+
+    // a function to use as a null check, since it's different for each observation
     nullCheck: (a: Observation) => boolean;
+
+    // how to convert from an Observation to an ObservationViewModel
     viewModelFactory: (a: Observation) => ObservationViewModel<any>;
 
     constructor(viewName: string,
@@ -18,7 +23,11 @@ class View {
         this.valueAxisFormatter = labelInterpolationFunc;
         this.referenceValue = () => referenceValue;
     }
+
+    // optional. if supplied, the graph will always display this value on the y-axis
     referenceValue(): number | null { return null; }
+    
+    // how to format the y-axis labels
     valueAxisFormatter(v: number): string { return v.toFixed(0); }
 }
 
