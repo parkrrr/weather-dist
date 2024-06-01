@@ -13,11 +13,16 @@
 
 .windpoint {
 	stroke-width: 0.1px;
-	fill: $primary;
+	stroke: $highlight;
+	fill: $highlight;
+}
+
+.point {
+	stroke: $primary;
 }
 
 .qc-fail {
-	stroke: $secondary-dark;
+	stroke: red;
 }
 
 .gridline {
