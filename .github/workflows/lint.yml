@@ -17,4 +17,5 @@ jobs:
       - run: npm ci # or yarn install
       - uses: sibiraj-s/action-eslint@v3
         with:
+          extensions: 'js,jsx,ts,tsx'
           annotations: true
