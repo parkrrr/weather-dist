@@ -6,7 +6,7 @@ class View {
     constructor(viewName: string,
         referenceValue: number | null = null,
         nullCheck: (a: Observation) => boolean,
-        viewModelFactory: (a: Observation) => ObservationViewModel<ViewModelGenericTypes>,
+        viewModelFactory: (a: Observation) => ObservationViewModel<any>,
         valueAxisFormatter: (v: number) => string) {
         this.name = viewName;
         this.nullCheck = nullCheck;
