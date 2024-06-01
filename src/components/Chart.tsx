@@ -129,7 +129,7 @@ export function Chart(props: { view: View, observations: ObservationViewModel<Vi
 
           switch (p.qc) {
             case true:
-              return <circle cx={p.x} cy={p.y} r={pointSize} />
+              return <circle cx={p.x} cy={p.y} r={pointSize} className={style.point} />
             case false:
               return <circle cx={p.x} cy={p.y} r={pointSize} className={style['qc-fail']} />
             case null:
