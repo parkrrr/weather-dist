@@ -71,3 +71,4 @@ const getViewByName = (name: string | null): View | null => {
 
 const views = [temperatureView, dewpointView, humidityView, pressureView, windView];
 export { View, views, getViewByName };
+
