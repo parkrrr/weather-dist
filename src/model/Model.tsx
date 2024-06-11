@@ -2,6 +2,7 @@ import { QuantitativeValue } from "../spec/weather-gov-api";
 
 export function pascalsToInchesMercury(pascals: number) { return pascals * 0.0002953 };
 export function celciusToFahrenheit(c: number) { return (c * 1.8) + 32; }
+export function kilometersToMiles(km: number) { return km * 0.621371; }
 export function parseQualityControl(qualityCode: "Z" | "C" | "S" | "V" | "X" | "Q" | "G" | "B" | "T" | undefined): boolean | null {
     switch (qualityCode) {
         case "B":
@@ -83,7 +84,7 @@ export class HumidityModel extends ObservationViewModel<number> {
 export class WindModel extends ObservationViewModel<[number, number]> {
     constructor(timestamp: string, windSpeed: QuantitativeValue, windDirection: QuantitativeValue) {
         super(timestamp, windSpeed);
-        this.value = [windSpeed.value!, windDirection.value!];
+        this.value = [kilometersToMiles(windSpeed.value!), windDirection.value!];
     }
 
     toDataPoint() {
