@@ -103,7 +103,7 @@ export function App() {
 		return (
 			<>
 				<Header latestObservation={viewModels[0]} now={new Date()} />
-				<Subheader latestObservation={viewModels[0]} airport={airport} onAirportChange={(a) => changeAirport(a)} />
+				<Subheader latestObservation={viewModels[0]} stationId={airport} onStationIdChanged={(a) => changeAirport(a)} />
 				<Chart view={view} observations={viewModels} />
 				<Navigation initialView={view} onChange={(v) => setView(v)} />
 				<Scale initialScale={scale} onChange={(s) => setScale(s)} />

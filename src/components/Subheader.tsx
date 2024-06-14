@@ -1,9 +1,11 @@
 import React from 'preact/compat';
 import { ObservationViewModel, ViewModelGenericTypes } from "../model/Model";
 import style from './Subheader.module.scss';
-import { getStationByLocation } from '../services/WeatherService';
+import { LocationFinder } from './LocationFinder';
 
-export function Subheader(props: { airport: string, latestObservation: ObservationViewModel<ViewModelGenericTypes>, onAirportChange: (airport: string | null) => void }) {
+export function Subheader(props: { stationId: string, latestObservation: ObservationViewModel<ViewModelGenericTypes>, onStationIdChanged: (stationId: string | null) => void }) {
+    if (!props.latestObservation) return null;
+
     const dateFormatOptions: Intl.DateTimeFormatOptions = {
         month: 'numeric',
         day: 'numeric',
@@ -16,31 +18,9 @@ export function Subheader(props: { airport: string, latestObservation: Observati
 
     const readableTimeStamp = props.latestObservation.timestamp.toLocaleString(navigator.language, dateFormatOptions);
 
-    const getNewLocation = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(getLocation, askForLocation, { enableHighAccuracy: false, timeout: 5000 });
-        }
-        else {
-            askForLocation();
-        }
-    }
-
-    const getLocation = (position: GeolocationPosition) => {
-        getStationByLocation(position).then((station) => {
-            props.onAirportChange(station);
-        });
-
-    }
-
-
-    const askForLocation = () => {
-        const newLocation = window.prompt("Enter airport code");
-        if (newLocation) {
-            props.onAirportChange(newLocation);
-        }
-    }
-
     return (
-        <h2 className={style.subtitle} onClick={getNewLocation}>{props.airport} at {readableTimeStamp}</h2>
+        <div className={style.subtitleItem}>
+            <LocationFinder onStationIdChanged={props.onStationIdChanged} /> <h2 className={style.subtitle}>{props.stationId} at {readableTimeStamp}</h2>
+        </div>
     )
 }
