@@ -38,13 +38,17 @@ export function Header(props: { latestObservation: ObservationViewModel<ViewMode
     const [relativeDateString, setrelativeDateString] = useState<string>(getRelativeDateString());
 
     useEffect(() => {
-        const onFocus = () => setrelativeDateString(getRelativeDateString());
+        const onVisibilityChange  = () => {
+            if (document.visibilityState === 'visible') {
+                setrelativeDateString(getRelativeDateString());
+            }
+        }
 
-        window.addEventListener('focus', onFocus);
+        window.addEventListener('visibilitychange', onVisibilityChange);
 
         // Clean up event listener on unmount
         return () => {
-            window.removeEventListener('focus', onFocus);
+            window.removeEventListener('visibilitychange', onVisibilityChange);
         };
     }, []);
 
