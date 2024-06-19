@@ -1,7 +1,24 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+import mockObservations from './mockObservations';
+
+// mock the data so we don't have to rely on the network
+// also avoids inadvertently DDoSing the weather api
+const setupAndNavigate = async (page: Page, url?: string) => {
+  if (!url) {
+    url = 'http://127.0.0.1:3000/weather';
+  }
+
+  await page.route(/weather.gov/, route => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify(mockObservations)
+  }));
+
+  page.goto(url);
+}
 
 test('Render Header', async ({ page }) => {
-  await page.goto('http://127.0.0.1:3000/weather');
+  await setupAndNavigate(page);
 
   const headerRegex = new RegExp(/(\d+\.?\d*\s?[a-zA-Z%°]*\sas\sof\s\d*\s?[a-zA-Z]*)/);
   await expect(page.getByText(headerRegex)).toBeVisible();
@@ -11,7 +28,7 @@ test('Render Header', async ({ page }) => {
 });
 
 test('Render Chart', async ({ page, browserName }) => {
-  await page.goto('http://127.0.0.1:3000/weather');
+  await setupAndNavigate(page);
 
   // this test verifies that the chart is showing *something*
   // we are not testing that it is displaying accurately
@@ -39,18 +56,18 @@ test('Render Chart', async ({ page, browserName }) => {
 });
 
 test('Render Navigation', async ({ page }) => {
-  await page.goto('http://127.0.0.1:3000/weather');
+  await setupAndNavigate(page);
   await expect(page.locator('#navigation li')).toHaveCount(5);
   await expect(page.locator('#navigation li')).toHaveText(['Temp', 'Dew Point', 'Humidity', 'Pressure', 'Wind']);
 });
 
 test('Render Scale', async ({ page }) => {
-  await page.goto('http://127.0.0.1:3000/weather');
+  await setupAndNavigate(page);
   await expect(page.locator('#scale li')).toHaveCount(3);
   await expect(page.locator('#scale li')).toHaveText(['1 day', '3 day', '5 day']);
 });
 
 test('Invalid station shows error message', async ({ page }) => {
-  await page.goto('http://127.0.0.1:3000/weather?airport=XYYZ');
+  await setupAndNavigate(page, 'http://127.0.0.1:3000/weather?airport=XYYZ');
   await expect(page.locator('h2')).toHaveText('No observations from XYYZ');
 });
