@@ -11,6 +11,7 @@ import { Loading } from './components/Loading';
 import { ErrorMessage } from './components/ErrorMessage';
 import './style.scss';
 import { Scale } from './components/Scale';
+import { VNode } from 'preact';
 
 export function App() {
 	const [airport, setAirport] = useState<string | null>(null);
@@ -20,6 +21,7 @@ export function App() {
 	const [scale, setScale] = useState<string>(localStorage.getItem('scale') ?? '3');
 	const [loading, setLoading] = useState<boolean>(true);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [isUsingMocks, setIsUsingMocks] = useState<boolean>(false);
 
 	if (airport == null && window.location.search != '') {
 		const params = new URLSearchParams(window.location.search);
@@ -65,7 +67,11 @@ export function App() {
 					throw Error(error.detail);
 				}
 
-				return resp.json();
+				const data = await resp.json();
+				if (Object.prototype.hasOwnProperty.call(data, 'mock') == true) {
+					setIsUsingMocks(true);
+				}
+				return data;
 			})
 			.then((data: ObservationStationCollectionGeoJson) => {
 				const obs: Observation[] = data.features.map(((feat: { properties: Observation; }) => feat.properties));
@@ -128,16 +134,18 @@ export function App() {
 		history.pushState(null, '', newRelativePathQuery);
 	}
 
+	let content: VNode | string | null | undefined;
+
 	if (loading) {
-		return <Loading />
+		content = <Loading />
 	} else if (errorMessage) {
-		return <ErrorMessage message={errorMessage} onAirportChange={(a) => changeAirport(a)} />
+		content = <ErrorMessage message={errorMessage} onAirportChange={(a) => changeAirport(a)} />
 	} else if (airport == null) {
-		return <ErrorMessage message="No airport selected" onAirportChange={(a) => changeAirport(a)} />
+		content = <ErrorMessage message="No airport selected" onAirportChange={(a) => changeAirport(a)} />
 	} else if (view == null) {
-		return <ErrorMessage message="Invalid view selected" onAirportChange={(a) => changeAirport(a)} />
+		content = <ErrorMessage message="Invalid view selected" onAirportChange={(a) => changeAirport(a)} />
 	} else {
-		return (
+		content = (
 			<>
 				<Header latestObservation={viewModels[0]} now={new Date()} />
 				<Subheader latestObservation={viewModels[0]} airport={airport} onAirportChange={(a) => changeAirport(a)} />
@@ -147,4 +155,13 @@ export function App() {
 			</>
 		);
 	}
+
+	const mockWarning = (isUsingMocks && <div id="mockwarning">Using mock data</div>);
+
+	return (
+		<div>
+			{content}
+			{mockWarning}
+		</div>
+	);
 }

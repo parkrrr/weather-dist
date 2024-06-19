@@ -1,4 +1,6 @@
-export default {
+import { MockObservationStationCollection } from "./MockObservationStationCollection";
+
+const mockObservations: MockObservationStationCollection = {
     "mock": true,
     "@context": [
         "https://geojson.org/geojson-ld/geojson-context.jsonld",
@@ -25575,3 +25577,5 @@ export default {
         }
     ]
 }
+
+export default mockObservations;
