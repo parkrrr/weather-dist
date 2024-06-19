@@ -35,12 +35,12 @@ export function Header(props: { latestObservation: ObservationViewModel<ViewMode
         return relativeDateString;
     }
 
-    const [relativeDateString, setrelativeDateString] = useState<string>(getRelativeDateString());
+    const [relativeDateString, setRelativeDateString] = useState<string>(getRelativeDateString());
 
     useEffect(() => {
         const onVisibilityChange  = () => {
             if (document.visibilityState === 'visible') {
-                setrelativeDateString(getRelativeDateString());
+                setRelativeDateString(getRelativeDateString());
             }
         }
 
