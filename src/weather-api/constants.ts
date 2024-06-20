@@ -1,0 +1,1 @@
+export const USER_AGENT = 'https://github.com/parkrrr/weather';

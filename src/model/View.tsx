@@ -1,4 +1,4 @@
-import { Observation } from "../spec/weather-gov-api";
+import { Observation } from "../weather-api/weather-gov-api";
 import { ObservationViewModel, HumidityModel, TemperatureModel, WindModel, ViewModelGenericTypes } from "./Model";
 import { PressureModel } from "./Model";
 

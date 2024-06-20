@@ -5,13 +5,14 @@ import { Chart } from './components/Chart';
 import { Navigation } from './components/Navigation';
 import { useEffect, useState } from 'preact/hooks';
 import { View, getViewByName } from './model/View';
-import { Observation, ObservationStationCollectionGeoJson, ProblemDetail } from './spec/weather-gov-api';
+import { Observation } from './weather-api/weather-gov-api';
 import { ObservationViewModel, ViewModelGenericTypes } from './model/Model';
 import { Loading } from './components/Loading';
 import { ErrorMessage } from './components/ErrorMessage';
 import './style.scss';
 import { Scale } from './components/Scale';
 import { VNode } from 'preact';
+import { getObservations } from './weather-api/getObservations';
 
 export function App() {
 	const [airport, setAirport] = useState<string | null>(null);
@@ -43,57 +44,18 @@ export function App() {
 
 		const refDate = new Date();
 		refDate.setDate(refDate.getDate() - parseInt(scale));
-		const startDate = refDate.toISOString();
 
-		const request = new Request(`https://api.weather.gov/stations/${airport}/observations?start=${startDate}`, {
-			method: 'GET',
-			headers: new Headers({
-				'Accept': 'application/geo+json',
-				'User-Agent': 'https://github.com/parkrrr/weather',
-			}),
-		});
+		getObservations(airport, refDate)
+			.then(({observations, isUsingMocks}) => {
+				setIsUsingMocks(isUsingMocks);
 
-		type ExtendedProblemDetail = ProblemDetail & { parameterErrors?: { message: string, parameter: string }[] };
-
-		fetch(request)
-			.then(async (resp: Response) => {
-				if (resp.status >= 400 && resp.status < 600) {
-					const error = await resp.json() as ExtendedProblemDetail;
-					if (error.parameterErrors) {
-						const parameterErrorString = error.parameterErrors.map(pd => pd.message).join(', ')
-						throw Error(parameterErrorString);
-					}
-
-					throw Error(error.detail);
-				}
-
-				const data = await resp.json();
-				if (Object.prototype.hasOwnProperty.call(data, 'mock') == true) {
-					setIsUsingMocks(true);
-				}
-				return data;
-			})
-			.then((data: ObservationStationCollectionGeoJson) => {
-				const obs: Observation[] = data.features.map(((feat: { properties: Observation; }) => feat.properties));
-
-				if (obs.length == 0) {
+				if (observations.length == 0) {
 					setErrorMessage(`No observations from ${airport}`);
 					return;
 				}
 
-				obs.sort((a, b) => {
-					if (!a.timestamp && !b.timestamp) {
-						return 0;
-					} else if (!a.timestamp) {
-						return 1;
-					} else if (!b.timestamp) {
-						return -1;
-					}
 
-					return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
-				});
-
-				setObservations(obs);
+				setObservations(observations);
 			})
 			.catch((err: Error) => setErrorMessage(err.message))
 			.finally(() => setLoading(false));
