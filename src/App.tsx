@@ -118,6 +118,8 @@ export function App() {
 		);
 	}
 
+	// a mock warning is shown during tests to confirm the network request was mocked
+	// this is more about preventing sending a bunch of network requests to the weather.gov API while running tests
 	const mockWarning = (isUsingMocks && <div id="mockwarning">Using mock data</div>);
 
 	return (
