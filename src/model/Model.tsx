@@ -1,4 +1,4 @@
-import { QuantitativeValue } from "../spec/weather-gov-api";
+import { QuantitativeValue } from "../weather-api/weather-gov-api";
 
 export function pascalsToInchesMercury(pascals: number) { return pascals * 0.0002953 };
 export function celciusToFahrenheit(c: number) { return (c * 1.8) + 32; }
