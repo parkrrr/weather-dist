@@ -9,6 +9,10 @@ updates:
     directory: '/'
     schedule:
       interval: 'monthly'
+  groups:
+    dependencies:
+      applies-to: version-updates
+
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
